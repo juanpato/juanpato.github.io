@@ -1,9 +1,13 @@
 document.addEventListener("DOMContentLoaded", function() {
     const form = document.getElementById("expense-form");
+    const cbuForm = document.getElementById("cbu-form");
     const expenseList = document.getElementById("expense-list");
     const paymentSummary = document.getElementById("payment-summary");
+    const copySummaryBtn = document.getElementById("copy-summary");
 
     let gastos = [];
+    let cbus = {};
+    let editIndex = -1;
 
     form.addEventListener("submit", function(event) {
         event.preventDefault();
@@ -18,26 +22,71 @@ document.addEventListener("DOMContentLoaded", function() {
         }
 
         const gasto = { title, amount, payer, participants };
-        gastos.push(gasto);
+
+        if (editIndex === -1) {
+            gastos.push(gasto);
+        } else {
+            gastos[editIndex] = gasto;
+            editIndex = -1;
+            form.querySelector('button[type="submit"]').textContent = 'Agregar Gasto';
+        }
+
         actualizarListaGastos();
         calcularPagos();
-
         form.reset();
+    });
+
+    cbuForm.addEventListener("submit", function(event) {
+        event.preventDefault();
+        const participant = document.getElementById("participant").value;
+        const cbu = document.getElementById("cbu").value;
+
+        cbus[participant] = cbu;
+
+        alert(`CBU/Alias de ${participant} ha sido agregado.`);
+        cbuForm.reset();
+    });
+
+    copySummaryBtn.addEventListener("click", function() {
+        const summaryText = paymentSummary.innerText;
+        navigator.clipboard.writeText(summaryText)
+            .then(() => alert("Resumen copiado al portapapeles."))
+            .catch(err => alert("Error al copiar el resumen: ", err));
     });
 
     function actualizarListaGastos() {
         expenseList.innerHTML = "";
-        gastos.forEach(gasto => {
+        gastos.forEach((gasto, index) => {
             const row = document.createElement("tr");
             row.innerHTML = `
                 <td>${gasto.title}</td>
                 <td>${gasto.amount.toLocaleString('es-AR', { style: 'currency', currency: 'ARS' })}</td>
                 <td>${gasto.payer}</td>
                 <td>${gasto.participants.join(", ")}</td>
+                <td>
+                    <button class="btn btn-warning btn-sm mr-2" onclick="editarGasto(${index})">Editar</button>
+                    <button class="btn btn-danger btn-sm" onclick="eliminarGasto(${index})">Eliminar</button>
+                </td>
             `;
             expenseList.appendChild(row);
         });
     }
+
+    window.editarGasto = function(index) {
+        const gasto = gastos[index];
+        document.getElementById("title").value = gasto.title;
+        document.getElementById("amount").value = gasto.amount;
+        document.getElementById("payer").value = gasto.payer;
+        document.getElementById("participants").value = gasto.participants;
+        editIndex = index;
+        form.querySelector('button[type="submit"]').textContent = 'Guardar Cambios';
+    };
+
+    window.eliminarGasto = function(index) {
+        gastos.splice(index, 1);
+        actualizarListaGastos();
+        calcularPagos();
+    };
 
     function calcularPagos() {
         const balances = {};
@@ -70,7 +119,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
             const pago = Math.min(deuda.cantidad, acreedor.cantidad);
 
-            pagos.push(`${deuda.nombre} le debe a ${acreedor.nombre}: ${pago.toLocaleString('es-AR', { style: 'currency', currency: 'ARS' })}`);
+            pagos.push(`${deuda.nombre} le debe a ${acreedor.nombre}: ${pago.toLocaleString('es-AR', { style: 'currency', currency: 'ARS' })} ${cbus[acreedor.nombre] ? `(CBU/Alias: ${cbus[acreedor.nombre]})` : ""}`);
 
             deuda.cantidad -= pago;
             acreedor.cantidad -= pago;

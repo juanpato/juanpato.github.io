@@ -46,14 +46,17 @@
             <button type="submit" class="btn btn-primary">Agregar Gasto</button>
         </form>
 
+
+
         <h2 class="mt-5">Lista de Gastos</h2>
-        <table class="table">
+        <table class="table table-responsive">
             <thead>
                 <tr>
                     <th>Título</th>
                     <th>Monto</th>
                     <th>Pagador</th>
                     <th>Participantes</th>
+                    <th>Acciones</th>
                 </tr>
             </thead>
             <tbody id="expense-list">
@@ -65,6 +68,7 @@
         <ul id="payment-summary" class="list-unstyled">
             <!-- Resumen de pagos se llenará aquí -->
         </ul>
+        <button id="copy-summary" class="btn btn-info mt-3">Copiar Resumen</button>
     </div>
 
     <!-- Scripts de Bootstrap -->
