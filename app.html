@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gastos de Grupo</title>
+    <!-- Enlaces a Bootstrap -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center">Gastos de Grupo</h1>
+        <form id="expense-form">
+            <div class="form-group">
+                <label for="title">Título del Gasto</label>
+                <input type="text" class="form-control" id="title" placeholder="Ingrese el título del gasto" required>
+            </div>
+            <div class="form-group">
+                <label for="amount">Monto</label>
+                <input type="number" class="form-control" id="amount" placeholder="Ingrese el monto" required>
+            </div>
+            <div class="form-group">
+                <label for="payer">Pagador</label>
+                <select class="form-control" id="payer" required>
+                    <option value="Roma">Roma</option>
+                    <option value="Pato">Pato</option>
+                    <option value="Nolo">Nolo</option>
+                    <option value="Nico">Nico</option>
+                    <option value="Zafer">Zafer</option>
+                    <option value="Marra">Marra</option>
+                    <option value="Gabo">Gabo</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="participants">Participantes</label>
+                <select multiple class="form-control" id="participants" required>
+                    <option value="Roma">Roma</option>
+                    <option value="Pato">Pato</option>
+                    <option value="Nolo">Nolo</option>
+                    <option value="Nico">Nico</option>
+                    <option value="Zafer">Zafer</option>
+                    <option value="Marra">Marra</option>
+                    <option value="Gabo">Gabo</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Agregar Gasto</button>
+        </form>
+
+        <h2 class="mt-5">Lista de Gastos</h2>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Título</th>
+                    <th>Monto</th>
+                    <th>Pagador</th>
+                    <th>Participantes</th>
+                </tr>
+            </thead>
+            <tbody id="expense-list">
+                <!-- Lista de gastos se llenará aquí -->
+            </tbody>
+        </table>
+
+        <h2 class="mt-5">Resumen de Pagos</h2>
+        <ul id="payment-summary" class="list-unstyled">
+            <!-- Resumen de pagos se llenará aquí -->
+        </ul>
+    </div>
+
+    <!-- Scripts de Bootstrap -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <!-- Script personalizado -->
+    <script src="app.js"></script>
+</body>
+</html>
