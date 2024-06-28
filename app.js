@@ -1,27 +1,35 @@
 document.addEventListener("DOMContentLoaded", function() {
     const form = document.getElementById("expense-form");
     const cbuForm = document.getElementById("cbu-form");
+    const participantsForm = document.getElementById("participants-form");
     const expenseList = document.getElementById("expense-list");
     const paymentSummary = document.getElementById("payment-summary");
     const copySummaryBtn = document.getElementById("copy-summary");
+    const loadDefaultParticipantsBtn = document.getElementById("load-default-participants");
+    const downloadParticipantsBtn = document.getElementById("download-participants");
+    const uploadParticipantsInput = document.getElementById("upload-participants");
+    const selectAllBtn = document.getElementById("select-all");
 
     let gastos = [];
     let cbus = {};
     let editIndex = -1;
+
+    const defaultParticipants = ["Roma", "Pato", "Nolo", "Nico", "Zafer", "Marra", "Gabo", "Beto"];
+    let participants = loadParticipants();
 
     form.addEventListener("submit", function(event) {
         event.preventDefault();
         const title = document.getElementById("title").value;
         const amount = parseFloat(document.getElementById("amount").value);
         const payer = document.getElementById("payer").value;
-        const participants = Array.from(document.getElementById("participants").selectedOptions).map(option => option.value);
+        const selectedParticipants = Array.from(document.getElementById("participants").selectedOptions).map(option => option.value);
 
-        if (participants.length === 0) {
+        if (selectedParticipants.length === 0) {
             alert("Por favor, seleccione al menos un participante.");
             return;
         }
 
-        const gasto = { title, amount, payer, participants };
+        const gasto = { title, amount, payer, participants: selectedParticipants };
 
         if (editIndex === -1) {
             gastos.push(gasto);
@@ -47,11 +55,61 @@ document.addEventListener("DOMContentLoaded", function() {
         cbuForm.reset();
     });
 
+    participantsForm.addEventListener("submit", function(event) {
+        event.preventDefault();
+        const participantsList = document.getElementById("participants-list").value.split("\n").map(name => name.trim()).filter(name => name);
+        saveParticipants(participantsList);
+        participants = participantsList;
+        cargarSelects();
+        alert("Lista de participantes guardada.");
+    });
+
     copySummaryBtn.addEventListener("click", function() {
         const summaryText = paymentSummary.innerText;
         navigator.clipboard.writeText(summaryText)
             .then(() => alert("Resumen copiado al portapapeles."))
             .catch(err => alert("Error al copiar el resumen: ", err));
+    });
+
+    loadDefaultParticipantsBtn.addEventListener("click", function() {
+        saveParticipants(defaultParticipants);
+        participants = defaultParticipants;
+        cargarSelects();
+        alert("Lista predeterminada cargada.");
+    });
+
+    downloadParticipantsBtn.addEventListener("click", function() {
+        const participantsText = participants.join("\n");
+        const blob = new Blob([participantsText], { type: 'text/plain' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'participants.txt';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    });
+
+    uploadParticipantsInput.addEventListener("change", function(event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const participantsText = e.target.result;
+                const participantsList = participantsText.split("\n").map(name => name.trim()).filter(name => name);
+                saveParticipants(participantsList);
+                participants = participantsList;
+                cargarSelects();
+                alert("Lista de participantes cargada.");
+            };
+            reader.readAsText(file);
+        }
+    });
+
+    selectAllBtn.addEventListener("click", function() {
+        const participantsSelect = document.getElementById("participants");
+        Array.from(participantsSelect.options).forEach(option => option.selected = true);
     });
 
     function actualizarListaGastos() {
@@ -77,7 +135,10 @@ document.addEventListener("DOMContentLoaded", function() {
         document.getElementById("title").value = gasto.title;
         document.getElementById("amount").value = gasto.amount;
         document.getElementById("payer").value = gasto.payer;
-        document.getElementById("participants").value = gasto.participants;
+        const participantsSelect = document.getElementById("participants");
+        Array.from(participantsSelect.options).forEach(option => {
+            option.selected = gasto.participants.includes(option.value);
+        });
         editIndex = index;
         form.querySelector('button[type="submit"]').textContent = 'Guardar Cambios';
     };
@@ -130,4 +191,35 @@ document.addEventListener("DOMContentLoaded", function() {
 
         paymentSummary.innerHTML = pagos.map(pago => `<li>${pago}</li>`).join("");
     }
+
+    function cargarSelects() {
+        const payerSelect = document.getElementById("payer");
+        const participantsSelect = document.getElementById("participants");
+        const participantSelect = document.getElementById("participant");
+
+        [payerSelect, participantsSelect, participantSelect].forEach(select => {
+            select.innerHTML = "";
+            participants.forEach(participant => {
+                const option = document.createElement("option");
+                option.value = participant;
+                option.textContent = participant;
+                select.appendChild(option);
+            });
+        });
+
+        if (participantsSelect) {
+            participantsSelect.multiple = true;
+        }
+    }
+
+    function loadParticipants() {
+        const participants = localStorage.getItem("participants");
+        return participants ? JSON.parse(participants) : defaultParticipants;
+    }
+
+    function saveParticipants(participants) {
+        localStorage.setItem("participants", JSON.stringify(participants));
+    }
+
+    cargarSelects();
 });
