@@ -4,11 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gastos de Grupo</title>
-    <!-- Enlaces a Bootstrap -->
+    <!-- Enlaces a Bootstrap y CSS personalizado -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="styles.css" rel="stylesheet">
 </head>
-<body>
-    <div class="container mt-5">
+<body class="bg-image">
+    <!-- Contenedor principal -->
+    <div class="container mt-5 container-content">
         <h1 class="text-center">Gastos de Grupo</h1>
         <form id="expense-form">
             <div class="form-group">
@@ -25,47 +27,19 @@
             </div>
             <div class="form-group">
                 <label for="participants">Participantes</label>
-                <select multiple class="form-control" id="participants" required></select>
+                <!-- Select múltiple mejorado con Bootstrap -->
+                <select multiple class="custom-select" id="participants" required>
+                    <!-- Opciones se llenarán dinámicamente -->
+                </select>
+            </div>
+            <div class="form-group form-check">
+                <input type="checkbox" class="form-check-input" id="select-all">
+                <label class="form-check-label" for="select-all">Seleccionar Todos</label>
             </div>
             <div class="form-group">
-                <div class="row">
-                    <div class="col-12">
-                        <button type="button" class="btn btn-secondary mt-2 btn-block" id="select-all">Seleccionar Todos</button>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-12">
-                        <button type="submit" class="btn btn-primary mt-2 btn-block">Agregar Gasto</button>
-                    </div>
-                </div>
+                <button type="submit" class="btn btn-primary mt-2 btn-success">Agregar Gasto</button>
             </div>
         </form>
-<div class="d-none">
-        <h2 class="mt-5">Agregar CBU/Alias a Participantes</h2>
-        <form id="cbu-form">
-            <div class="form-group">
-                <label for="participant">Participante</label>
-                <select class="form-control" id="participant" required></select>
-            </div>
-            <div class="form-group">
-                <label for="cbu">CBU/Alias</label>
-                <input type="text" class="form-control" id="cbu" placeholder="Ingrese el CBU o Alias" required>
-            </div>
-            <button type="submit" class="btn btn-secondary">Agregar CBU/Alias</button>
-        </form>
-
-        <h2 class="mt-5">Modificar Lista de Participantes</h2>
-        <form id="participants-form">
-            <div class="form-group">
-                <label for="participants-list">Lista de Participantes (uno por línea)</label>
-                <textarea class="form-control" id="participants-list" rows="7" required></textarea>
-            </div>
-            <button type="submit" class="btn btn-success">Guardar Lista</button>
-            <button type="button" id="load-default-participants" class="btn btn-info">Cargar Lista Predeterminada</button>
-            <button type="button" id="download-participants" class="btn btn-dark">Descargar Lista</button>
-            <input type="file" id="upload-participants" class="btn btn-secondary mt-2" accept=".txt">
-        </form>
-    </div>
         <h2 class="mt-5">Lista de Gastos</h2>
         <table class="table table-responsive">
             <thead>
@@ -89,11 +63,10 @@
         <button id="copy-summary" class="btn btn-info mt-3">Copiar Resumen</button>
     </div>
 
-    <!-- Scripts de Bootstrap -->
+    <!-- Scripts de Bootstrap y tu script personalizado -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <!-- Script personalizado -->
     <script src="app.js"></script>
 </body>
 </html>

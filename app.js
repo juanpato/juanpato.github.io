@@ -1,20 +1,24 @@
 document.addEventListener("DOMContentLoaded", function() {
     const form = document.getElementById("expense-form");
-    const cbuForm = document.getElementById("cbu-form");
-    const participantsForm = document.getElementById("participants-form");
     const expenseList = document.getElementById("expense-list");
     const paymentSummary = document.getElementById("payment-summary");
     const copySummaryBtn = document.getElementById("copy-summary");
-    const loadDefaultParticipantsBtn = document.getElementById("load-default-participants");
-    const downloadParticipantsBtn = document.getElementById("download-participants");
-    const uploadParticipantsInput = document.getElementById("upload-participants");
-    const selectAllBtn = document.getElementById("select-all");
+    const selectAllCheckbox = document.getElementById("select-all");
 
     let gastos = [];
-    let cbus = {};
     let editIndex = -1;
 
     const defaultParticipants = ["Roma", "Pato", "Nolo", "Nico", "Zafer", "Marra", "Gabo", "Beto"];
+    let cbus = {
+        "Beto": "MANIJA.DULCE.CANADA",
+        "Gabo": "COLLAR.ROBLE.BATATA",
+        "Pato": "ing.patovich",
+        "Marra": "1910038455103801875467",
+        "Nico": "TOPE.REGLA.REMO",
+        "Roma": "0000168300000002326337",
+        "Nolo": "acatar.tasa.siga.mp",
+        "Zafer": "dr.garciapadin"
+    };
     let participants = loadParticipants();
 
     form.addEventListener("submit", function(event) {
@@ -44,72 +48,17 @@ document.addEventListener("DOMContentLoaded", function() {
         form.reset();
     });
 
-    cbuForm.addEventListener("submit", function(event) {
-        event.preventDefault();
-        const participant = document.getElementById("participant").value;
-        const cbu = document.getElementById("cbu").value;
-
-        cbus[participant] = cbu;
-
-        alert(`CBU/Alias de ${participant} ha sido agregado.`);
-        cbuForm.reset();
-    });
-
-    participantsForm.addEventListener("submit", function(event) {
-        event.preventDefault();
-        const participantsList = document.getElementById("participants-list").value.split("\n").map(name => name.trim()).filter(name => name);
-        saveParticipants(participantsList);
-        participants = participantsList;
-        cargarSelects();
-        alert("Lista de participantes guardada.");
-    });
-
     copySummaryBtn.addEventListener("click", function() {
         const summaryText = paymentSummary.innerText;
         navigator.clipboard.writeText(summaryText)
             .then(() => alert("Resumen copiado al portapapeles."))
-            .catch(err => alert("Error al copiar el resumen: ", err));
+            .catch(err => alert("Error al copiar el resumen: " + err));
     });
 
-    loadDefaultParticipantsBtn.addEventListener("click", function() {
-        saveParticipants(defaultParticipants);
-        participants = defaultParticipants;
-        cargarSelects();
-        alert("Lista predeterminada cargada.");
-    });
-
-    downloadParticipantsBtn.addEventListener("click", function() {
-        const participantsText = participants.join("\n");
-        const blob = new Blob([participantsText], { type: 'text/plain' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'participants.txt';
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-    });
-
-    uploadParticipantsInput.addEventListener("change", function(event) {
-        const file = event.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const participantsText = e.target.result;
-                const participantsList = participantsText.split("\n").map(name => name.trim()).filter(name => name);
-                saveParticipants(participantsList);
-                participants = participantsList;
-                cargarSelects();
-                alert("Lista de participantes cargada.");
-            };
-            reader.readAsText(file);
-        }
-    });
-
-    selectAllBtn.addEventListener("click", function() {
+    selectAllCheckbox.addEventListener("change", function() {
         const participantsSelect = document.getElementById("participants");
-        Array.from(participantsSelect.options).forEach(option => option.selected = true);
+        const selectAll = selectAllCheckbox.checked;
+        Array.from(participantsSelect.options).forEach(option => option.selected = selectAll);
     });
 
     function actualizarListaGastos() {
@@ -180,7 +129,10 @@ document.addEventListener("DOMContentLoaded", function() {
 
             const pago = Math.min(deuda.cantidad, acreedor.cantidad);
 
-            pagos.push(`${deuda.nombre} le debe a ${acreedor.nombre}: ${pago.toLocaleString('es-AR', { style: 'currency', currency: 'ARS' })} ${cbus[acreedor.nombre] ? `(CBU/Alias: ${cbus[acreedor.nombre]})` : ""}`);
+            // Agregar CBU si está definido en cbus
+            const cbuInfo = cbus[acreedor.nombre] ? `(CBU/Alias: ${cbus[acreedor.nombre]})` : "";
+
+            pagos.push(`${deuda.nombre} le debe a ${acreedor.nombre}: ${pago.toLocaleString('es-AR', { style: 'currency', currency: 'ARS' })} ${cbuInfo}`);
 
             deuda.cantidad -= pago;
             acreedor.cantidad -= pago;
