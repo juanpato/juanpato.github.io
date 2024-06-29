@@ -50,9 +50,25 @@ document.addEventListener("DOMContentLoaded", function() {
 
     copySummaryBtn.addEventListener("click", function() {
         const summaryText = paymentSummary.innerText;
-        navigator.clipboard.writeText(summaryText)
-            .then(() => alert("Resumen copiado al portapapeles."))
-            .catch(err => alert("Error al copiar el resumen: " + err));
+        
+        // Crear un elemento de texto temporal
+        const textArea = document.createElement("textarea");
+        textArea.value = summaryText;
+        textArea.style.position = "fixed"; // Evitar desplazamiento de la página
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+
+        // Intentar usar el comando de copia
+        try {
+            document.execCommand('copy');
+            alert("Resumen copiado al portapapeles.");
+        } catch (err) {
+            alert("Error al copiar el resumen: " + err);
+        }
+
+        // Eliminar el elemento temporal
+        document.body.removeChild(textArea);
     });
 
     selectAllCheckbox.addEventListener("change", function() {
