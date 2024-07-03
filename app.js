@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", async function() {
     const form = document.getElementById("expense-form");
     const expenseList = document.getElementById("expense-list");
     const paymentSummary = document.getElementById("payment-summary");
@@ -7,19 +7,26 @@ document.addEventListener("DOMContentLoaded", function() {
 
     let gastos = [];
     let editIndex = -1;
+    let participants = [];
+    let cbus = {};
 
-    const defaultParticipants = ["Roma", "Pato", "Nolo", "Nico", "Zafer", "Marra", "Gabo", "Beto"];
-    let cbus = {
-        "Beto": "MANIJA.DULCE.CANADA",
-        "Gabo": "COLLAR.ROBLE.BATATA",
-        "Pato": "ing.patovich",
-        "Marra": "1910038455103801875467",
-        "Nico": "TOPE.REGLA.REMO",
-        "Roma": "0000168300000002326337",
-        "Nolo": "acatar.tasa.siga.mp",
-        "Zafer": "dr.garciapadin"
-    };
-    let participants = loadParticipants();
+    const apiEndpoint = "https://nizp0d1uh2.execute-api.sa-east-1.amazonaws.com/develop/usuarios";
+
+    // Fetch participants and CBUs from the API
+    try {
+        const response = await fetch(apiEndpoint);
+        if (!response.ok) {
+            throw new Error('Error al obtener los usuarios');
+        }
+        const usuarios = await response.json();
+        console.log(usuarios)
+        participants = usuarios.map(usuario => usuario.name);
+        usuarios.forEach(usuario => {
+            cbus[usuario.name] = usuario.cbu;
+        });
+    } catch (error) {
+        console.error('Error:', error);
+    }
 
     form.addEventListener("submit", function(event) {
         event.preventDefault();
@@ -162,15 +169,6 @@ document.addEventListener("DOMContentLoaded", function() {
         if (participantsSelect) {
             participantsSelect.multiple = true;
         }
-    }
-
-    function loadParticipants() {
-        const participants = localStorage.getItem("participants");
-        return participants ? JSON.parse(participants) : defaultParticipants;
-    }
-
-    function saveParticipants(participants) {
-        localStorage.setItem("participants", JSON.stringify(participants));
     }
 
     cargarSelects();
