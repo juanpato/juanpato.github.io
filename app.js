@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", async function() {
+document.addEventListener("DOMContentLoaded", async function () {
     const form = document.getElementById("expense-form");
     const expenseList = document.getElementById("expense-list");
     const paymentSummary = document.getElementById("payment-summary");
@@ -12,23 +12,64 @@ document.addEventListener("DOMContentLoaded", async function() {
 
     const apiEndpoint = "https://nizp0d1uh2.execute-api.sa-east-1.amazonaws.com/develop/usuarios";
 
-    // Fetch participants and CBUs from the API
-    try {
-        const response = await fetch(apiEndpoint);
-        if (!response.ok) {
-            throw new Error('Error al obtener los usuarios');
+    async function fetchUsuarios() {
+        try {
+            const response = await fetch(apiEndpoint);
+            if (!response.ok) {
+                throw new Error('Error al obtener los usuarios');
+            }
+            const data = await response.json();
+
+            let usuarios;
+            try {
+                usuarios = JSON.parse(data.body);  // Parsear la cadena JSON
+            } catch (parseError) {
+                throw new Error('Error al parsear el cuerpo de la respuesta JSON');
+            }
+
+            if (!Array.isArray(usuarios)) {
+                throw new Error('El cuerpo de la respuesta no es un array');
+            }
+
+            participants = usuarios.map(usuario => usuario.name);
+            usuarios.forEach(usuario => {
+                cbus[usuario.name] = usuario.cbu;
+            });
+
+            cargarSelects();
+
+        } catch (error) {
+            console.error('Error:', error.message);
         }
-        const usuarios = await response.json();
-        console.log(usuarios)
-        participants = usuarios.map(usuario => usuario.name);
-        usuarios.forEach(usuario => {
-            cbus[usuario.name] = usuario.cbu;
-        });
-    } catch (error) {
-        console.error('Error:', error);
     }
 
-    form.addEventListener("submit", function(event) {
+    function cargarSelects() {
+        const payerSelect = document.getElementById("payer");
+        const participantsSelect = document.getElementById("participants");
+        const participantSelect = document.getElementById("participant");
+
+        const selects = [payerSelect, participantsSelect, participantSelect];
+
+        selects.forEach(select => {
+            if (select) {
+                select.innerHTML = "";
+                participants.forEach(participant => {
+                    const option = document.createElement("option");
+                    option.value = participant;
+                    option.textContent = participant;
+                    select.appendChild(option);
+                });
+            }
+        });
+
+        if (participantsSelect) {
+            participantsSelect.multiple = true;
+        }
+    }
+
+    await fetchUsuarios();
+
+    form.addEventListener("submit", function (event) {
         event.preventDefault();
         const title = document.getElementById("title").value;
         const amount = parseFloat(document.getElementById("amount").value);
@@ -55,9 +96,9 @@ document.addEventListener("DOMContentLoaded", async function() {
         form.reset();
     });
 
-    copySummaryBtn.addEventListener("click", function() {
+    copySummaryBtn.addEventListener("click", function () {
         const summaryText = paymentSummary.innerText;
-        
+
         // Crear un elemento de texto temporal
         const textArea = document.createElement("textarea");
         textArea.value = summaryText;
@@ -78,7 +119,7 @@ document.addEventListener("DOMContentLoaded", async function() {
         document.body.removeChild(textArea);
     });
 
-    selectAllCheckbox.addEventListener("change", function() {
+    selectAllCheckbox.addEventListener("change", function () {
         const participantsSelect = document.getElementById("participants");
         const selectAll = selectAllCheckbox.checked;
         Array.from(participantsSelect.options).forEach(option => option.selected = selectAll);
@@ -102,7 +143,7 @@ document.addEventListener("DOMContentLoaded", async function() {
         });
     }
 
-    window.editarGasto = function(index) {
+    window.editarGasto = function (index) {
         const gasto = gastos[index];
         document.getElementById("title").value = gasto.title;
         document.getElementById("amount").value = gasto.amount;
@@ -115,7 +156,7 @@ document.addEventListener("DOMContentLoaded", async function() {
         form.querySelector('button[type="submit"]').textContent = 'Guardar Cambios';
     };
 
-    window.eliminarGasto = function(index) {
+    window.eliminarGasto = function (index) {
         gastos.splice(index, 1);
         actualizarListaGastos();
         calcularPagos();
@@ -167,25 +208,4 @@ document.addEventListener("DOMContentLoaded", async function() {
         paymentSummary.innerHTML = pagos.map(pago => `<li>${pago}</li>`).join("");
     }
 
-    function cargarSelects() {
-        const payerSelect = document.getElementById("payer");
-        const participantsSelect = document.getElementById("participants");
-        const participantSelect = document.getElementById("participant");
-
-        [payerSelect, participantsSelect, participantSelect].forEach(select => {
-            select.innerHTML = "";
-            participants.forEach(participant => {
-                const option = document.createElement("option");
-                option.value = participant;
-                option.textContent = participant;
-                select.appendChild(option);
-            });
-        });
-
-        if (participantsSelect) {
-            participantsSelect.multiple = true;
-        }
-    }
-
-    cargarSelects();
 });
