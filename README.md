@@ -28,9 +28,9 @@ directamente con GitHub Pages.
 
 | Proyecto | Descripción | Stack | Link |
 |---|---|---|---|
-| **Futbolero!** | App para organizar y gestionar partidos de fútbol entre amigos | .NET Core · React · SQL Server | https://futbolero.ar |
-| **Verde Mercado** | E-commerce de productos agroecológicos con carrito y login con Google | ASP.NET Core MVC · EF · SQL Server | https://verdemercado.com.ar |
-| **Sentido de Vida** | Sitio institucional con eventos, galería, newsletter y panel admin | .NET · Panel de administración | https://sentidodevida.com.ar |
+| **Futbolero!** | App para organizar y gestionar partidos de fútbol entre amigos (web + apps nativas iOS y Android) | TypeScript · React · React Native (Expo) · Node.js | https://futbolero.ar |
+| **Verde Mercado** | E-commerce de productos agroecológicos con carrito y login con Google | .NET 6 · ASP.NET MVC · SQL Server · Docker | https://verdemercado.com.ar |
+| **Sentido de Vida** | Landing institucional con panel de administración a medida | JavaScript · React · HTML / CSS | https://sentidodevida.com.ar |
 
 ## Stack técnico
 

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -97,6 +97,7 @@
     letter-spacing:.04em;display:flex;align-items:center;gap:9px;
   }
   .logo b{color:var(--acc);font-weight:500;}
+  .nav-right{display:flex;align-items:center;gap:24px;}
   .nav-links{display:flex;gap:30px;align-items:center;}
   .nav-links a{
     font-family:var(--mono);font-size:12.5px;letter-spacing:.06em;
@@ -108,6 +109,20 @@
     padding:8px 16px;border-radius:2px;transition:all .2s;
   }
   .nav-cta:hover{background:var(--acc);color:#0c0d0f!important;border-color:var(--acc);}
+
+  /* language switcher */
+  .lang{
+    display:flex;border:1px solid var(--line-strong);border-radius:2px;
+    overflow:hidden;
+  }
+  .lang button{
+    font-family:var(--mono);font-size:11px;letter-spacing:.06em;
+    background:transparent;border:none;color:var(--muted);
+    padding:7px 11px;cursor:pointer;transition:background .2s,color .2s;
+  }
+  .lang button:not(.active):hover{color:var(--text);}
+  .lang button.active{background:var(--acc);color:#0c0d0f;}
+
   .burger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:6px;}
   .burger span{width:22px;height:2px;background:var(--text);display:block;}
 
@@ -204,6 +219,24 @@
   .about-lead em{font-style:normal;color:var(--acc);}
   .about-body p{color:var(--muted);margin-bottom:18px;}
   .about-body p:last-child{margin-bottom:0;}
+  .portrait{margin-bottom:36px;}
+  .portrait-frame{position:relative;width:fit-content;max-width:300px;}
+  .portrait-frame img{
+    display:block;width:100%;border:1px solid var(--line-strong);
+    border-radius:2px;filter:saturate(.97) contrast(1.03);
+  }
+  .portrait-frame::before{
+    content:"";position:absolute;left:-9px;top:-9px;width:46px;height:46px;
+    border-left:2px solid var(--acc);border-top:2px solid var(--acc);
+  }
+  .portrait-frame::after{
+    content:"";position:absolute;right:-9px;bottom:-9px;width:46px;height:46px;
+    border-right:2px solid var(--acc);border-bottom:2px solid var(--acc);
+  }
+  .portrait figcaption{
+    font-family:var(--mono);font-size:11px;letter-spacing:.07em;
+    text-transform:uppercase;color:var(--muted);margin-top:16px;
+  }
   .pillars{
     display:grid;grid-template-columns:repeat(3,1fr);gap:1px;
     background:var(--line);border:1px solid var(--line);
@@ -246,7 +279,13 @@
     font-size:clamp(2rem,4.6vw,3.4rem);line-height:1;
     letter-spacing:-.03em;margin:14px 0 16px;
   }
-  .p-desc{color:var(--muted);max-width:58ch;margin-bottom:20px;}
+  .p-desc{color:var(--muted);max-width:58ch;margin-bottom:16px;}
+  .p-role{
+    font-family:var(--mono);font-size:12px;color:var(--muted);
+    letter-spacing:.02em;margin-bottom:20px;
+    display:flex;align-items:center;gap:9px;
+  }
+  .p-role::before{content:"▹";color:var(--acc);}
   .p-tags{display:flex;flex-wrap:wrap;gap:8px;}
   .tag{
     font-family:var(--mono);font-size:11.5px;letter-spacing:.02em;
@@ -388,6 +427,7 @@
     body{font-size:16px;}
     .wrap{padding:0 20px;}
     .nav-in{padding:14px 20px;}
+    .nav-right{gap:12px;}
     .hero{padding:140px 0 70px;}
     .hero-side{flex-direction:column;gap:26px;}
     .about,.projects,.experience,.skills{padding:80px 0;}
@@ -407,13 +447,19 @@
 <nav id="nav">
   <div class="nav-in">
     <a href="#top" class="logo"><b>{ }</b> juan_guerra<span style="color:var(--muted-2)">.dev</span></a>
-    <div class="nav-links" id="navlinks">
-      <a href="#proyectos">Proyectos</a>
-      <a href="#experiencia">Experiencia</a>
-      <a href="#stack">Stack</a>
-      <a href="#contacto" class="nav-cta">Contacto</a>
+    <div class="nav-right">
+      <div class="nav-links" id="navlinks">
+        <a href="#proyectos" data-i18n="nav.projects">Projects</a>
+        <a href="#experiencia" data-i18n="nav.experience">Experience</a>
+        <a href="#stack" data-i18n="nav.stack">Stack</a>
+        <a href="#contacto" class="nav-cta" data-i18n="nav.contact">Contact</a>
+      </div>
+      <div class="lang" id="lang" aria-label="Language">
+        <button type="button" data-lang="es">ES</button>
+        <button type="button" data-lang="en">EN</button>
+      </div>
+      <div class="burger" id="burger"><span></span><span></span><span></span></div>
     </div>
-    <div class="burger" id="burger"><span></span><span></span><span></span></div>
   </div>
 </nav>
 
@@ -422,7 +468,7 @@
   <div class="wrap">
     <div class="hero-grid">
       <div>
-        <div class="status anim d1"><span class="dot"></span> Disponible para nuevos proyectos · Remote-first</div>
+        <div class="status anim d1"><span class="dot"></span> <span data-i18n="hero.status">Available for new projects · Remote-first</span></div>
         <h1>
           <span class="ln"><span class="anim d2" style="display:inline-block">JUAN ANDRÉS</span></span>
           <span class="ln"><span class="anim d3" style="display:inline-block">GUERRA<span class="acc-dot">.</span></span></span>
@@ -430,28 +476,28 @@
         <div class="hero-role anim d4">
           Software Engineer <span>/</span> Backend .NET &amp; Azure <span>/</span> Buenos Aires, AR
         </div>
-        <p class="hero-lead anim d4">
-          Diseño y mantengo <b>sistemas backend de nivel productivo</b> con .NET y la nube.
-          5+ años entregando software confiable en entornos exigentes de seguros y banca —
-          y proyectos propios que ya están vivos y en uso.
+        <p class="hero-lead anim d4" data-i18n="hero.lead">
+          I design and maintain <b>production-grade backend systems</b> with .NET and the cloud.
+          5+ years delivering reliable software in demanding insurance and banking environments —
+          plus personal projects already live and in use.
         </p>
         <div class="hero-actions anim d5">
-          <a href="#proyectos" class="btn btn-primary">Ver proyectos →</a>
-          <a href="JuanAndresGuerra_CV.pdf" download class="btn btn-ghost">↓ Descargar CV</a>
+          <a href="#proyectos" class="btn btn-primary" data-i18n="hero.cta1">View projects →</a>
+          <a href="JuanAndresGuerra_CV.pdf" download class="btn btn-ghost" data-i18n="hero.cta2">↓ Download CV</a>
         </div>
       </div>
       <aside class="hero-side anim d6">
         <div class="stat">
           <div class="num"><em>5+</em></div>
-          <div class="lbl">Años construyendo<br/>software .NET</div>
+          <div class="lbl" data-i18n="stat1">Years building<br/>.NET software</div>
         </div>
         <div class="stat">
           <div class="num">03</div>
-          <div class="lbl">Plataformas propias<br/>en producción</div>
+          <div class="lbl" data-i18n="stat2">Personal platforms<br/>in production</div>
         </div>
         <div class="stat">
           <div class="num">∞</div>
-          <div class="lbl">Seguros · Banca<br/>entornos enterprise</div>
+          <div class="lbl" data-i18n="stat3">Insurance · Banking<br/>enterprise environments</div>
         </div>
       </aside>
     </div>
@@ -473,41 +519,48 @@
   <div class="wrap">
     <div class="about-grid">
       <div class="reveal">
-        <div class="eyebrow">Sobre mí</div>
-        <p class="about-lead" style="margin-top:20px">
-          Software Engineer con foco en el <em>backend</em>: APIs confiables, datos consistentes y sistemas que no se caen cuando más se los necesita.
+        <figure class="portrait">
+          <div class="portrait-frame">
+            <img src="juan-guerra.jpg" alt="Juan Andrés Guerra" />
+          </div>
+          <figcaption>Juan Andrés Guerra — Buenos Aires, AR</figcaption>
+        </figure>
+        <div class="eyebrow" data-i18n="about.eyebrow">About</div>
+        <p class="about-lead" style="margin-top:20px" data-i18n="about.lead">
+          Software Engineer focused on the <em>backend</em>: reliable APIs, consistent data
+          and systems that don't go down when they're needed most.
         </p>
       </div>
       <div class="about-body reveal">
-        <p>
-          Soy Juan Andrés Guerra, Ingeniero en Informática por la Universidad Nacional de La Matanza.
-          Llevo más de cinco años construyendo y manteniendo aplicaciones de nivel productivo con
-          <b style="color:var(--text)">.NET</b> y <b style="color:var(--text)">Azure</b>.
+        <p data-i18n="about.p1">
+          I'm Juan Andrés Guerra, Computer Engineer from Universidad Nacional de La Matanza.
+          For over five years I've been building and maintaining production-grade applications with
+          <b style="color:var(--text)">.NET</b> and <b style="color:var(--text)">Azure</b>.
         </p>
-        <p>
-          Trabajé en entornos donde la confiabilidad no es opcional —seguros y banca—, ocupándome
-          de pipelines de CI/CD, despliegues en la nube, integraciones serverless y APIs que
-          sostienen operaciones reales. Estoy cómodo en equipos distribuidos y remote-first.
+        <p data-i18n="about.p2">
+          I've worked in environments where reliability isn't optional —insurance and banking—
+          handling CI/CD pipelines, cloud deployments, serverless integrations and APIs that
+          support real operations. I'm comfortable in distributed, remote-first teams.
         </p>
-        <p>
-          Hoy combino ese background enterprise con proyectos propios que diseñé, desarrollé
-          y puse en producción de punta a punta.
+        <p data-i18n="about.p3">
+          Today I combine that enterprise background with personal projects I designed,
+          built and shipped to production end to end.
         </p>
         <div class="pillars">
           <div class="pillar">
             <span class="pn">01</span>
-            <h4>APIs &amp; Backend</h4>
-            <p>Servicios .NET sólidos, bases de datos relacionales bien modeladas y código mantenible.</p>
+            <h4 data-i18n="pillar1.h">APIs &amp; Backend</h4>
+            <p data-i18n="pillar1.p">Solid .NET services, well-modeled relational databases and maintainable code.</p>
           </div>
           <div class="pillar">
             <span class="pn">02</span>
-            <h4>Cloud &amp; CI/CD</h4>
-            <p>Despliegues en Azure, pipelines automatizados y funciones serverless en producción.</p>
+            <h4 data-i18n="pillar2.h">Cloud &amp; CI/CD</h4>
+            <p data-i18n="pillar2.p">Azure deployments, automated pipelines and serverless functions in production.</p>
           </div>
           <div class="pillar">
             <span class="pn">03</span>
-            <h4>De la idea a producción</h4>
-            <p>Capaz de llevar un producto completo desde el diseño hasta el sitio en vivo.</p>
+            <h4 data-i18n="pillar3.h">From idea to production</h4>
+            <p data-i18n="pillar3.p">Able to take a full product from design to a live site.</p>
           </div>
         </div>
       </div>
@@ -519,30 +572,32 @@
 <section class="projects" id="proyectos">
   <div class="wrap">
     <div class="sec-head reveal">
-      <div class="eyebrow">01 / Proyectos en producción</div>
-      <h2>Software que <em>ya está vivo.</em></h2>
+      <div class="eyebrow" data-i18n="proj.eyebrow">01 / Projects in production</div>
+      <h2 data-i18n="proj.head">Software that's <em>already live.</em></h2>
     </div>
 
     <!-- project 1 -->
     <article class="project reveal">
       <div class="p-num">/01</div>
       <div>
-        <div class="p-cat">App social · SPA</div>
+        <div class="p-cat" data-i18n="p1.cat">Social app · Web · iOS · Android</div>
         <h3 class="p-title">Futbolero!</h3>
-        <p class="p-desc">
-          Aplicación web para organizar y gestionar partidos de fútbol entre amigos:
-          convocatorias, armado de equipos y seguimiento de cada partido. Single Page
-          Application con API propia y base de datos relacional.
+        <p class="p-desc" data-i18n="p1.desc">
+          App to organize and manage football matches with friends: call-ups,
+          team building and match tracking. Available on web, with native iOS
+          and Android apps. Built with full-stack TypeScript, a shared monorepo
+          and end-to-end tests.
         </p>
+        <div class="p-role" data-i18n="p1.role">My role — Full-stack development · in collaboration with Eze Romanelli</div>
         <div class="p-tags">
-          <span class="tag">.NET Core</span>
+          <span class="tag">TypeScript</span>
           <span class="tag">React</span>
-          <span class="tag">SQL Server</span>
-          <span class="tag">Web API REST</span>
+          <span class="tag">React Native · Expo</span>
+          <span class="tag">Node.js</span>
         </div>
       </div>
       <a href="https://futbolero.ar" target="_blank" rel="noopener" class="p-link">
-        Visitar sitio <span class="arr">↗</span>
+        <span data-i18n="p.link">Visit site</span> <span class="arr">↗</span>
       </a>
     </article>
 
@@ -550,22 +605,24 @@
     <article class="project reveal">
       <div class="p-num">/02</div>
       <div>
-        <div class="p-cat">E-commerce</div>
+        <div class="p-cat" data-i18n="p2.cat">E-commerce</div>
         <h3 class="p-title">Verde Mercado</h3>
-        <p class="p-desc">
-          Tienda online de productos agroecológicos: catálogo, carrito de compras,
-          registro de usuarios y autenticación con Google. Conecta a productores
-          familiares con consumidores conscientes.
+        <p class="p-desc" data-i18n="p2.desc">
+          Online store for agroecological products: catalog, shopping cart,
+          user registration and Google authentication. Connects family farmers
+          with conscious consumers.
         </p>
+        <div class="p-role" data-i18n="p2.role">My role — End-to-end full-stack development</div>
         <div class="p-tags">
-          <span class="tag">ASP.NET Core MVC</span>
-          <span class="tag">Entity Framework</span>
+          <span class="tag">.NET 6 · ASP.NET MVC</span>
+          <span class="tag">C#</span>
           <span class="tag">SQL Server</span>
+          <span class="tag">Docker</span>
           <span class="tag">Google OAuth</span>
         </div>
       </div>
       <a href="https://verdemercado.com.ar" target="_blank" rel="noopener" class="p-link">
-        Visitar sitio <span class="arr">↗</span>
+        <span data-i18n="p.link">Visit site</span> <span class="arr">↗</span>
       </a>
     </article>
 
@@ -573,22 +630,24 @@
     <article class="project reveal">
       <div class="p-num">/03</div>
       <div>
-        <div class="p-cat">Sitio institucional</div>
+        <div class="p-cat" data-i18n="p3.cat">Institutional website</div>
         <h3 class="p-title">Sentido de Vida</h3>
-        <p class="p-desc">
-          Sitio institucional para una comunidad religiosa: agenda de eventos,
-          ministerios, galería, suscripción a newsletter y un panel de administración
-          a medida para gestionar todo el contenido.
+        <p class="p-desc" data-i18n="p3.desc">
+          Institutional website for a religious community: event schedule,
+          ministries, gallery, newsletter subscription and a custom admin panel
+          to manage all content.
         </p>
+        <div class="p-role" data-i18n="p3.role">My role — Design and development · solo project</div>
         <div class="p-tags">
-          <span class="tag">.NET</span>
-          <span class="tag">Panel de administración</span>
+          <span class="tag">JavaScript</span>
+          <span class="tag">React</span>
+          <span class="tag">HTML / CSS</span>
+          <span class="tag" data-i18n="tag.adminpanel">Admin panel</span>
           <span class="tag">Newsletter</span>
-          <span class="tag">Diseño responsive</span>
         </div>
       </div>
       <a href="https://sentidodevida.com.ar" target="_blank" rel="noopener" class="p-link">
-        Visitar sitio <span class="arr">↗</span>
+        <span data-i18n="p.link">Visit site</span> <span class="arr">↗</span>
       </a>
     </article>
   </div>
@@ -598,56 +657,56 @@
 <section class="experience" id="experiencia">
   <div class="wrap">
     <div class="sec-head reveal">
-      <div class="eyebrow">02 / Trayectoria</div>
-      <h2>Dónde <em>dejé código.</em></h2>
+      <div class="eyebrow" data-i18n="exp.eyebrow">02 / Career</div>
+      <h2 data-i18n="exp.head">Where I've <em>shipped code.</em></h2>
     </div>
     <div class="timeline">
       <div class="job reveal">
-        <div class="job-date">Ene 2024 — <span class="now">Presente</span></div>
+        <div class="job-date" data-i18n="job1.date">Jan 2024 — <span class="now">Present</span></div>
         <div>
-          <h3>Software Developer — Freelance</h3>
-          <div class="co">Remoto <span>/ Proyectos propios</span></div>
-          <p>
-            Desarrollo y mantenimiento de aplicaciones web con .NET Core, React y SQL Server.
-            Construí y desplegué plataformas listas para producción, incluyendo futbolero.ar
-            y verdemercado.com.ar.
+          <h3 data-i18n="job1.title">Software Developer — Freelance</h3>
+          <div class="co" data-i18n="job1.co">Remote <span>/ Personal projects</span></div>
+          <p data-i18n="job1.p">
+            Development and maintenance of web applications with .NET Core, React and SQL Server.
+            Built and deployed production-ready platforms, including futbolero.ar and
+            verdemercado.com.ar.
           </p>
         </div>
       </div>
       <div class="job reveal">
-        <div class="job-date">Ene 2022 — Jul 2024</div>
+        <div class="job-date" data-i18n="job2.date">Jan 2022 — Jul 2024</div>
         <div>
-          <h3>Software Developer</h3>
-          <div class="co">Nybble Group <span>/ Remoto</span></div>
-          <p>
-            Desarrollo y mantenimiento de aplicaciones enterprise del rubro seguros con .NET,
-            ASP.NET Core, SQL Server y Angular. Gestión de despliegues en múltiples entornos
-            con Azure DevOps (CI/CD) e implementación de Azure Functions para procesar webhooks
-            de Stripe de forma segura e idempotente.
+          <h3 data-i18n="job2.title">Software Developer</h3>
+          <div class="co" data-i18n="job2.co">Nybble Group <span>/ Remote</span></div>
+          <p data-i18n="job2.p">
+            Development and maintenance of enterprise insurance applications with .NET,
+            ASP.NET Core, SQL Server and Angular. Managed deployments across multiple
+            environments with Azure DevOps (CI/CD) and implemented Azure Functions to
+            process Stripe webhooks securely and idempotently.
           </p>
         </div>
       </div>
       <div class="job reveal">
-        <div class="job-date">Sep 2021 — Dic 2021</div>
+        <div class="job-date" data-i18n="job3.date">Sep 2021 — Dec 2021</div>
         <div>
-          <h3>Backend Developer</h3>
-          <div class="co">Snoop Consulting <span>/ Remoto</span></div>
-          <p>
-            Migración de microservicios de Java a .NET Core en un entorno bancario. Desarrollo
-            de servicios backend con .NET Core, Oracle y Entity Framework, trabajando en sprints
-            ágiles con equipos multidisciplinarios.
+          <h3 data-i18n="job3.title">Backend Developer</h3>
+          <div class="co" data-i18n="job3.co">Snoop Consulting <span>/ Remote</span></div>
+          <p data-i18n="job3.p">
+            Migration of microservices from Java to .NET Core in a banking environment.
+            Development of backend services with .NET Core, Oracle and Entity Framework,
+            working in agile sprints with cross-functional teams.
           </p>
         </div>
       </div>
       <div class="job reveal">
-        <div class="job-date">Mar 2020 — Ago 2021</div>
+        <div class="job-date" data-i18n="job4.date">Mar 2020 — Aug 2021</div>
         <div>
-          <h3>Full Stack Developer</h3>
+          <h3 data-i18n="job4.title">Full Stack Developer</h3>
           <div class="co">Ar-Tech</div>
-          <p>
-            Sistemas backend con .NET Core y SQL Server para plataformas de gestión de pedidos
-            y pronóstico de ventas. Soluciones de procesamiento de facturas multiformato
-            (parsing de PDF e imágenes).
+          <p data-i18n="job4.p">
+            Backend systems with .NET Core and SQL Server for order management and sales
+            forecasting platforms. Multi-format invoice processing solutions (PDF and
+            image parsing).
           </p>
         </div>
       </div>
@@ -659,41 +718,41 @@
 <section class="skills" id="stack">
   <div class="wrap">
     <div class="sec-head reveal">
-      <div class="eyebrow">03 / Stack técnico</div>
-      <h2>Con qué <em>trabajo.</em></h2>
+      <div class="eyebrow" data-i18n="skills.eyebrow">03 / Tech stack</div>
+      <h2 data-i18n="skills.head">What I <em>work with.</em></h2>
     </div>
     <div class="skill-grid">
       <div class="skill-block reveal">
-        <div class="cat"><b>+</b> Backend</div>
+        <div class="cat" data-i18n="skills.cat1"><b>+</b> Backend</div>
         <div class="items">
           <span>C#</span><span>.NET Core</span><span>ASP.NET Core</span>
           <span>Entity Framework</span><span>LINQ</span><span>Web API</span>
         </div>
       </div>
       <div class="skill-block reveal">
-        <div class="cat"><b>+</b> Cloud &amp; DevOps</div>
+        <div class="cat" data-i18n="skills.cat2"><b>+</b> Cloud &amp; DevOps</div>
         <div class="items">
           <span>Azure</span><span>Azure DevOps</span><span>CI/CD Pipelines</span>
           <span>Azure Functions</span>
         </div>
       </div>
       <div class="skill-block reveal">
-        <div class="cat"><b>+</b> Bases de datos</div>
+        <div class="cat" data-i18n="skills.cat3"><b>+</b> Databases</div>
         <div class="items">
           <span>SQL Server</span><span>Oracle</span>
         </div>
       </div>
       <div class="skill-block reveal">
-        <div class="cat"><b>+</b> Frontend</div>
+        <div class="cat" data-i18n="skills.cat4"><b>+</b> Frontend</div>
         <div class="items">
           <span>React</span><span>Angular</span><span>Blazor</span>
         </div>
       </div>
       <div class="skill-block reveal" style="grid-column:1/-1">
-        <div class="cat"><b>+</b> Herramientas &amp; metodología</div>
+        <div class="cat" data-i18n="skills.cat5"><b>+</b> Tools &amp; methodology</div>
         <div class="items">
           <span>Git</span><span>Scrum</span><span>Agile</span>
-          <span>Stripe Webhooks</span><span>Procesamiento PDF / OCR</span>
+          <span>Stripe Webhooks</span><span data-i18n="skill.pdfocr">PDF processing / OCR</span>
         </div>
       </div>
     </div>
@@ -703,18 +762,18 @@
 <!-- ============ CONTACT ============ -->
 <section class="contact" id="contacto">
   <div class="wrap">
-    <div class="eyebrow">04 / Contacto</div>
-    <h2>Hagamos algo <em>que funcione.</em></h2>
-    <p class="contact-sub">
-      Disponible para posiciones full-time y proyectos freelance, de forma remota.
-      Si buscás alguien que entregue backend confiable, escribime.
+    <div class="eyebrow" data-i18n="contact.eyebrow">04 / Contact</div>
+    <h2 data-i18n="contact.head">Let's build something <em>that works.</em></h2>
+    <p class="contact-sub" data-i18n="contact.sub">
+      Available for full-time positions and freelance projects, remotely.
+      If you need someone who delivers reliable backend, get in touch.
     </p>
     <a href="mailto:juanguerracuenta@gmail.com" class="mail">juanguerracuenta@gmail.com</a>
     <div class="socials">
       <a href="mailto:juanguerracuenta@gmail.com">✉ Email</a>
       <a href="https://github.com/juanpato" target="_blank" rel="noopener">⌥ GitHub</a>
       <a href="https://www.linkedin.com/in/juan-andres-guerra/" target="_blank" rel="noopener">in LinkedIn</a>
-      <a href="JuanAndresGuerra_CV.pdf" download>↓ Descargar CV</a>
+      <a href="JuanAndresGuerra_CV.pdf" download data-i18n="social.cv">↓ Download CV</a>
     </div>
   </div>
 </section>
@@ -723,23 +782,187 @@
 <footer>
   <div class="wrap foot-in">
     <div>© 2026 Juan Andrés Guerra — Software Engineer</div>
-    <div>Buenos Aires, Argentina · Hecho con C# y café</div>
-    <a href="#top">↑ Volver arriba</a>
+    <div data-i18n="foot2">Buenos Aires, Argentina · Made with C# and coffee</div>
+    <a href="#top" data-i18n="foot3">↑ Back to top</a>
   </div>
 </footer>
 
 <script>
-  // nav scroll state
+  /* ---------- translations ---------- */
+  const translations = {
+    es:{
+      "nav.projects":"Proyectos",
+      "nav.experience":"Experiencia",
+      "nav.stack":"Stack",
+      "nav.contact":"Contacto",
+      "hero.status":"Disponible para nuevos proyectos · Remote-first",
+      "hero.lead":`Diseño y mantengo <b>sistemas backend de nivel productivo</b> con .NET y la nube. 5+ años entregando software confiable en entornos exigentes de seguros y banca — y proyectos propios que ya están vivos y en uso.`,
+      "hero.cta1":"Ver proyectos →",
+      "hero.cta2":"↓ Descargar CV",
+      "stat1":`Años construyendo<br/>software .NET`,
+      "stat2":`Plataformas propias<br/>en producción`,
+      "stat3":`Seguros · Banca<br/>entornos enterprise`,
+      "about.eyebrow":"Sobre mí",
+      "about.lead":`Software Engineer con foco en el <em>backend</em>: APIs confiables, datos consistentes y sistemas que no se caen cuando más se los necesita.`,
+      "about.p1":`Soy Juan Andrés Guerra, Ingeniero en Informática por la Universidad Nacional de La Matanza. Llevo más de cinco años construyendo y manteniendo aplicaciones de nivel productivo con <b style="color:var(--text)">.NET</b> y <b style="color:var(--text)">Azure</b>.`,
+      "about.p2":`Trabajé en entornos donde la confiabilidad no es opcional —seguros y banca—, ocupándome de pipelines de CI/CD, despliegues en la nube, integraciones serverless y APIs que sostienen operaciones reales. Estoy cómodo en equipos distribuidos y remote-first.`,
+      "about.p3":`Hoy combino ese background enterprise con proyectos propios que diseñé, desarrollé y puse en producción de punta a punta.`,
+      "pillar1.h":"APIs &amp; Backend",
+      "pillar1.p":"Servicios .NET sólidos, bases de datos relacionales bien modeladas y código mantenible.",
+      "pillar2.h":"Cloud &amp; CI/CD",
+      "pillar2.p":"Despliegues en Azure, pipelines automatizados y funciones serverless en producción.",
+      "pillar3.h":"De la idea a producción",
+      "pillar3.p":"Capaz de llevar un producto completo desde el diseño hasta el sitio en vivo.",
+      "proj.eyebrow":"01 / Proyectos en producción",
+      "proj.head":`Software que <em>ya está vivo.</em>`,
+      "p1.cat":"App social · Web · iOS · Android",
+      "p1.desc":"App para organizar y gestionar partidos de fútbol entre amigos: convocatorias, armado de equipos y seguimiento de partidos. Disponible en web y con apps nativas para iOS y Android. Desarrollada con TypeScript full-stack, monorepo compartido y tests end-to-end.",
+      "p2.cat":"E-commerce",
+      "p2.desc":"Tienda online de productos agroecológicos: catálogo, carrito de compras, registro de usuarios y autenticación con Google. Conecta a productores familiares con consumidores conscientes.",
+      "p3.cat":"Sitio institucional",
+      "p3.desc":"Sitio institucional para una comunidad religiosa: agenda de eventos, ministerios, galería, suscripción a newsletter y un panel de administración a medida para gestionar todo el contenido.",
+      "p1.role":"Mi rol — Desarrollo full-stack · en colaboración con Eze Romanelli",
+      "p2.role":"Mi rol — Desarrollo full-stack end-to-end",
+      "p3.role":"Mi rol — Diseño y desarrollo · proyecto individual",
+      "p.link":"Visitar sitio",
+      "tag.adminpanel":"Panel de administración",
+      "tag.responsive":"Diseño responsive",
+      "exp.eyebrow":"02 / Trayectoria",
+      "exp.head":`Dónde <em>dejé código.</em>`,
+      "job1.date":`Ene 2024 — <span class="now">Presente</span>`,
+      "job1.title":"Software Developer — Freelance",
+      "job1.co":`Remoto <span>/ Proyectos propios</span>`,
+      "job1.p":"Desarrollo y mantenimiento de aplicaciones web con .NET Core, React y SQL Server. Construí y desplegué plataformas listas para producción, incluyendo futbolero.ar y verdemercado.com.ar.",
+      "job2.date":"Ene 2022 — Jul 2024",
+      "job2.title":"Software Developer",
+      "job2.co":`Nybble Group <span>/ Remoto</span>`,
+      "job2.p":"Desarrollo y mantenimiento de aplicaciones enterprise del rubro seguros con .NET, ASP.NET Core, SQL Server y Angular. Gestión de despliegues en múltiples entornos con Azure DevOps (CI/CD) e implementación de Azure Functions para procesar webhooks de Stripe de forma segura e idempotente.",
+      "job3.date":"Sep 2021 — Dic 2021",
+      "job3.title":"Backend Developer",
+      "job3.co":`Snoop Consulting <span>/ Remoto</span>`,
+      "job3.p":"Migración de microservicios de Java a .NET Core en un entorno bancario. Desarrollo de servicios backend con .NET Core, Oracle y Entity Framework, trabajando en sprints ágiles con equipos multidisciplinarios.",
+      "job4.date":"Mar 2020 — Ago 2021",
+      "job4.title":"Full Stack Developer",
+      "job4.p":"Sistemas backend con .NET Core y SQL Server para plataformas de gestión de pedidos y pronóstico de ventas. Soluciones de procesamiento de facturas multiformato (parsing de PDF e imágenes).",
+      "skills.eyebrow":"03 / Stack técnico",
+      "skills.head":`Con qué <em>trabajo.</em>`,
+      "skills.cat1":`<b>+</b> Backend`,
+      "skills.cat2":`<b>+</b> Cloud &amp; DevOps`,
+      "skills.cat3":`<b>+</b> Bases de datos`,
+      "skills.cat4":`<b>+</b> Frontend`,
+      "skills.cat5":`<b>+</b> Herramientas &amp; metodología`,
+      "skill.pdfocr":"Procesamiento PDF / OCR",
+      "contact.eyebrow":"04 / Contacto",
+      "contact.head":`Hagamos algo <em>que funcione.</em>`,
+      "contact.sub":"Disponible para posiciones full-time y proyectos freelance, de forma remota. Si buscás alguien que entregue backend confiable, escribime.",
+      "social.cv":"↓ Descargar CV",
+      "foot2":"Buenos Aires, Argentina · Hecho con C# y café",
+      "foot3":"↑ Volver arriba"
+    },
+    en:{
+      "nav.projects":"Projects",
+      "nav.experience":"Experience",
+      "nav.stack":"Stack",
+      "nav.contact":"Contact",
+      "hero.status":"Available for new projects · Remote-first",
+      "hero.lead":`I design and maintain <b>production-grade backend systems</b> with .NET and the cloud. 5+ years delivering reliable software in demanding insurance and banking environments — plus personal projects already live and in use.`,
+      "hero.cta1":"View projects →",
+      "hero.cta2":"↓ Download CV",
+      "stat1":`Years building<br/>.NET software`,
+      "stat2":`Personal platforms<br/>in production`,
+      "stat3":`Insurance · Banking<br/>enterprise environments`,
+      "about.eyebrow":"About",
+      "about.lead":`Software Engineer focused on the <em>backend</em>: reliable APIs, consistent data and systems that don't go down when they're needed most.`,
+      "about.p1":`I'm Juan Andrés Guerra, Computer Engineer from Universidad Nacional de La Matanza. For over five years I've been building and maintaining production-grade applications with <b style="color:var(--text)">.NET</b> and <b style="color:var(--text)">Azure</b>.`,
+      "about.p2":`I've worked in environments where reliability isn't optional —insurance and banking— handling CI/CD pipelines, cloud deployments, serverless integrations and APIs that support real operations. I'm comfortable in distributed, remote-first teams.`,
+      "about.p3":`Today I combine that enterprise background with personal projects I designed, built and shipped to production end to end.`,
+      "pillar1.h":"APIs &amp; Backend",
+      "pillar1.p":"Solid .NET services, well-modeled relational databases and maintainable code.",
+      "pillar2.h":"Cloud &amp; CI/CD",
+      "pillar2.p":"Azure deployments, automated pipelines and serverless functions in production.",
+      "pillar3.h":"From idea to production",
+      "pillar3.p":"Able to take a full product from design to a live site.",
+      "proj.eyebrow":"01 / Projects in production",
+      "proj.head":`Software that's <em>already live.</em>`,
+      "p1.cat":"Social app · Web · iOS · Android",
+      "p1.desc":"App to organize and manage football matches with friends: call-ups, team building and match tracking. Available on web, with native iOS and Android apps. Built with full-stack TypeScript, a shared monorepo and end-to-end tests.",
+      "p2.cat":"E-commerce",
+      "p2.desc":"Online store for agroecological products: catalog, shopping cart, user registration and Google authentication. Connects family farmers with conscious consumers.",
+      "p3.cat":"Institutional website",
+      "p3.desc":"Institutional website for a religious community: event schedule, ministries, gallery, newsletter subscription and a custom admin panel to manage all content.",
+      "p1.role":"My role — Full-stack development · in collaboration with Eze Romanelli",
+      "p2.role":"My role — End-to-end full-stack development",
+      "p3.role":"My role — Design and development · solo project",
+      "p.link":"Visit site",
+      "tag.adminpanel":"Admin panel",
+      "tag.responsive":"Responsive design",
+      "exp.eyebrow":"02 / Career",
+      "exp.head":`Where I've <em>shipped code.</em>`,
+      "job1.date":`Jan 2024 — <span class="now">Present</span>`,
+      "job1.title":"Software Developer — Freelance",
+      "job1.co":`Remote <span>/ Personal projects</span>`,
+      "job1.p":"Development and maintenance of web applications with .NET Core, React and SQL Server. Built and deployed production-ready platforms, including futbolero.ar and verdemercado.com.ar.",
+      "job2.date":"Jan 2022 — Jul 2024",
+      "job2.title":"Software Developer",
+      "job2.co":`Nybble Group <span>/ Remote</span>`,
+      "job2.p":"Development and maintenance of enterprise insurance applications with .NET, ASP.NET Core, SQL Server and Angular. Managed deployments across multiple environments with Azure DevOps (CI/CD) and implemented Azure Functions to process Stripe webhooks securely and idempotently.",
+      "job3.date":"Sep 2021 — Dec 2021",
+      "job3.title":"Backend Developer",
+      "job3.co":`Snoop Consulting <span>/ Remote</span>`,
+      "job3.p":"Migration of microservices from Java to .NET Core in a banking environment. Development of backend services with .NET Core, Oracle and Entity Framework, working in agile sprints with cross-functional teams.",
+      "job4.date":"Mar 2020 — Aug 2021",
+      "job4.title":"Full Stack Developer",
+      "job4.p":"Backend systems with .NET Core and SQL Server for order management and sales forecasting platforms. Multi-format invoice processing solutions (PDF and image parsing).",
+      "skills.eyebrow":"03 / Tech stack",
+      "skills.head":`What I <em>work with.</em>`,
+      "skills.cat1":`<b>+</b> Backend`,
+      "skills.cat2":`<b>+</b> Cloud &amp; DevOps`,
+      "skills.cat3":`<b>+</b> Databases`,
+      "skills.cat4":`<b>+</b> Frontend`,
+      "skills.cat5":`<b>+</b> Tools &amp; methodology`,
+      "skill.pdfocr":"PDF processing / OCR",
+      "contact.eyebrow":"04 / Contact",
+      "contact.head":`Let's build something <em>that works.</em>`,
+      "contact.sub":"Available for full-time positions and freelance projects, remotely. If you need someone who delivers reliable backend, get in touch.",
+      "social.cv":"↓ Download CV",
+      "foot2":"Buenos Aires, Argentina · Made with C# and coffee",
+      "foot3":"↑ Back to top"
+    }
+  };
+
+  function applyLang(lang){
+    if(!translations[lang]) lang='en';
+    document.documentElement.lang=lang;
+    const dict=translations[lang];
+    document.querySelectorAll('[data-i18n]').forEach(el=>{
+      const k=el.getAttribute('data-i18n');
+      if(dict[k]!==undefined) el.innerHTML=dict[k];
+    });
+    document.querySelectorAll('.lang button').forEach(b=>{
+      b.classList.toggle('active',b.dataset.lang===lang);
+    });
+  }
+
+  /* default English, Spanish only if the browser language is Spanish */
+  const browserLang=(navigator.language||navigator.userLanguage||'en').toLowerCase();
+  const startLang=browserLang.startsWith('es')?'es':'en';
+  applyLang(startLang);
+
+  document.querySelectorAll('.lang button').forEach(b=>{
+    b.addEventListener('click',()=>applyLang(b.dataset.lang));
+  });
+
+  /* nav scroll state */
   const nav=document.getElementById('nav');
   addEventListener('scroll',()=>nav.classList.toggle('scrolled',scrollY>20));
 
-  // mobile menu
+  /* mobile menu */
   const burger=document.getElementById('burger');
   const links=document.getElementById('navlinks');
   burger.addEventListener('click',()=>links.classList.toggle('open'));
   links.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>links.classList.remove('open')));
 
-  // scroll reveal
+  /* scroll reveal */
   const io=new IntersectionObserver((entries)=>{
     entries.forEach(e=>{
       if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}
