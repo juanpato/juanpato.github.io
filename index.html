@@ -1,72 +1,754 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gastos de Grupo</title>
-    <!-- Enlaces a Bootstrap y CSS personalizado -->
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <link href="styles.css" rel="stylesheet">
-</head>
-<body class="bg-image">
-    <!-- Contenedor principal -->
-    <div class="container mt-5 container-content">
-        <h1 class="text-center">Gastos de Grupo</h1>
-        <form id="expense-form">
-            <div class="form-group">
-                <label for="title">Título del Gasto</label>
-                <input type="text" class="form-control" id="title" placeholder="Ingrese el título del gasto" required>
-            </div>
-            <div class="form-group">
-                <label for="amount">Monto</label>
-                <input type="number" class="form-control" id="amount" placeholder="Ingrese el monto" required>
-            </div>
-            <div class="form-group">
-                <label for="payer">Pagador</label>
-                <select class="form-control" id="payer" required></select>
-            </div>
-            <div class="form-group">
-                <label for="participants">Participantes</label>
-                <!-- Select múltiple mejorado con Bootstrap -->
-                <select multiple class="custom-select" id="participants" required>
-                    <!-- Opciones se llenarán dinámicamente -->
-                </select>
-            </div>
-            <div class="form-group form-check">
-                <input type="checkbox" class="form-check-input" id="select-all">
-                <label class="form-check-label" for="select-all">Seleccionar Todos</label>
-            </div>
-            <div class="form-group">
-                <button type="submit" class="btn btn-primary mt-2 btn-success">Agregar Gasto</button>
-            </div>
-        </form>
-        <h2 class="mt-5">Lista de Gastos</h2>
-        <table class="table table-responsive">
-            <thead>
-                <tr>
-                    <th>Título</th>
-                    <th>Monto</th>
-                    <th>Pagador</th>
-                    <th>Participantes</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody id="expense-list">
-                <!-- Lista de gastos se llenará aquí -->
-            </tbody>
-        </table>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Juan Andrés Guerra — Software Engineer · .NET</title>
+<meta name="description" content="Software Engineer con 5+ años construyendo sistemas backend productivos con .NET y Azure. Portfolio de proyectos en producción." />
+<meta name="theme-color" content="#0c0d0f" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=Hanken+Grotesk:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --bg:#0c0d0f;
+    --bg-2:#101114;
+    --surface:#141519;
+    --surface-2:#191b20;
+    --line:rgba(255,255,255,0.09);
+    --line-strong:rgba(255,255,255,0.16);
+    --text:#f1f0ea;
+    --muted:#8b8b91;
+    --muted-2:#5f5f66;
+    --acc:#c8f24a;
+    --acc-dim:#9bbf3a;
+    --display:'Bricolage Grotesque',sans-serif;
+    --body:'Hanken Grotesk',sans-serif;
+    --mono:'JetBrains Mono',monospace;
+  }
 
-        <h2 class="mt-5">Resumen de Pagos</h2>
-        <ul id="payment-summary" class="list-unstyled">
-            <!-- Resumen de pagos se llenará aquí -->
-        </ul>
-        <button id="copy-summary" class="btn btn-info mt-3">Copiar Resumen</button>
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:var(--body);
+    font-size:17px;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  ::selection{background:var(--acc);color:#0c0d0f;}
+  a{color:inherit;text-decoration:none;}
+  img{display:block;max-width:100%;}
+
+  /* ---------- atmosphere ---------- */
+  .grain{
+    position:fixed;inset:0;z-index:9999;pointer-events:none;
+    opacity:.035;mix-blend-mode:overlay;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  .gridlines{
+    position:fixed;inset:0;z-index:0;pointer-events:none;
+    background-image:
+      linear-gradient(var(--line) 1px,transparent 1px),
+      linear-gradient(90deg,var(--line) 1px,transparent 1px);
+    background-size:clamp(60px,9vw,120px) clamp(60px,9vw,120px);
+    -webkit-mask-image:radial-gradient(ellipse 90% 60% at 50% 0%,#000 0%,transparent 80%);
+            mask-image:radial-gradient(ellipse 90% 60% at 50% 0%,#000 0%,transparent 80%);
+    opacity:.55;
+  }
+
+  /* ---------- layout ---------- */
+  .wrap{max-width:1240px;margin:0 auto;padding:0 28px;position:relative;z-index:1;}
+  section{position:relative;}
+
+  .eyebrow{
+    font-family:var(--mono);font-size:12px;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--acc);
+    display:flex;align-items:center;gap:12px;
+  }
+  .eyebrow::before{
+    content:"";width:26px;height:1px;background:var(--acc);display:inline-block;
+  }
+  .sec-head{margin-bottom:54px;}
+  .sec-head h2{
+    font-family:var(--display);font-weight:700;
+    font-size:clamp(2.1rem,5.5vw,3.6rem);
+    line-height:1.02;letter-spacing:-.02em;margin-top:18px;
+  }
+  .sec-head h2 em{font-style:normal;color:var(--acc);}
+
+  /* ---------- nav ---------- */
+  nav{
+    position:fixed;top:0;left:0;right:0;z-index:200;
+    backdrop-filter:blur(14px);
+    background:rgba(12,13,15,.72);
+    border-bottom:1px solid transparent;
+    transition:border-color .3s ease,background .3s ease;
+  }
+  nav.scrolled{border-bottom:1px solid var(--line);background:rgba(12,13,15,.92);}
+  .nav-in{
+    max-width:1240px;margin:0 auto;padding:16px 28px;
+    display:flex;align-items:center;justify-content:space-between;
+  }
+  .logo{
+    font-family:var(--mono);font-size:14px;font-weight:500;
+    letter-spacing:.04em;display:flex;align-items:center;gap:9px;
+  }
+  .logo b{color:var(--acc);font-weight:500;}
+  .nav-links{display:flex;gap:30px;align-items:center;}
+  .nav-links a{
+    font-family:var(--mono);font-size:12.5px;letter-spacing:.06em;
+    color:var(--muted);text-transform:uppercase;transition:color .2s;
+  }
+  .nav-links a:hover{color:var(--text);}
+  .nav-cta{
+    color:var(--text)!important;border:1px solid var(--line-strong);
+    padding:8px 16px;border-radius:2px;transition:all .2s;
+  }
+  .nav-cta:hover{background:var(--acc);color:#0c0d0f!important;border-color:var(--acc);}
+  .burger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:6px;}
+  .burger span{width:22px;height:2px;background:var(--text);display:block;}
+
+  /* ---------- hero ---------- */
+  .hero{padding:190px 0 90px;min-height:100vh;display:flex;align-items:center;}
+  .hero-grid{
+    display:grid;grid-template-columns:1.55fr .85fr;gap:50px;width:100%;
+    align-items:end;
+  }
+  .status{
+    display:inline-flex;align-items:center;gap:9px;
+    font-family:var(--mono);font-size:12px;letter-spacing:.08em;
+    color:var(--muted);text-transform:uppercase;margin-bottom:30px;
+  }
+  .dot{
+    width:8px;height:8px;border-radius:50%;background:var(--acc);
+    box-shadow:0 0 0 0 rgba(200,242,74,.6);
+    animation:pulse 2.4s infinite;
+  }
+  @keyframes pulse{
+    0%{box-shadow:0 0 0 0 rgba(200,242,74,.55);}
+    70%{box-shadow:0 0 0 11px rgba(200,242,74,0);}
+    100%{box-shadow:0 0 0 0 rgba(200,242,74,0);}
+  }
+  .hero h1{
+    font-family:var(--display);font-weight:800;
+    font-size:clamp(3.3rem,11vw,8.2rem);
+    line-height:.92;letter-spacing:-.035em;
+  }
+  .hero h1 .ln{display:block;overflow:hidden;}
+  .hero h1 .acc-dot{color:var(--acc);}
+  .hero-role{
+    font-family:var(--mono);font-size:clamp(13px,1.5vw,15px);
+    letter-spacing:.04em;color:var(--text);
+    margin:26px 0 18px;display:flex;flex-wrap:wrap;gap:6px 14px;
+  }
+  .hero-role span{color:var(--muted-2);}
+  .hero-lead{
+    color:var(--muted);max-width:46ch;font-size:1.06rem;
+  }
+  .hero-lead b{color:var(--text);font-weight:600;}
+  .hero-actions{display:flex;gap:14px;margin-top:38px;flex-wrap:wrap;}
+  .btn{
+    font-family:var(--mono);font-size:13px;letter-spacing:.04em;
+    padding:14px 24px;border-radius:2px;cursor:pointer;
+    display:inline-flex;align-items:center;gap:10px;
+    transition:transform .18s ease,background .2s,color .2s,border-color .2s;
+  }
+  .btn:hover{transform:translateY(-2px);}
+  .btn-primary{background:var(--acc);color:#0c0d0f;font-weight:500;}
+  .btn-primary:hover{background:#d6ff5e;}
+  .btn-ghost{border:1px solid var(--line-strong);color:var(--text);}
+  .btn-ghost:hover{border-color:var(--acc);color:var(--acc);}
+
+  .hero-side{
+    border-left:1px solid var(--line);padding-left:34px;
+    display:flex;flex-direction:column;gap:30px;
+  }
+  .stat .num{
+    font-family:var(--display);font-weight:700;
+    font-size:clamp(2.4rem,4vw,3.2rem);line-height:1;letter-spacing:-.03em;
+  }
+  .stat .num em{font-style:normal;color:var(--acc);}
+  .stat .lbl{
+    font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;
+    text-transform:uppercase;color:var(--muted);margin-top:8px;
+  }
+
+  /* ---------- marquee ---------- */
+  .marquee{
+    border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+    padding:20px 0;overflow:hidden;white-space:nowrap;
+    background:var(--bg-2);
+  }
+  .marquee-track{display:inline-flex;gap:0;animation:scroll 34s linear infinite;}
+  .marquee:hover .marquee-track{animation-play-state:paused;}
+  .marquee-track span{
+    font-family:var(--display);font-weight:600;
+    font-size:clamp(1.3rem,2.6vw,2rem);
+    padding:0 30px;color:var(--muted-2);
+    display:inline-flex;align-items:center;gap:30px;
+  }
+  .marquee-track span::after{content:"◆";color:var(--acc);font-size:.5em;}
+  @keyframes scroll{to{transform:translateX(-50%);}}
+
+  /* ---------- about ---------- */
+  .about{padding:120px 0;}
+  .about-grid{display:grid;grid-template-columns:.9fr 1.1fr;gap:64px;}
+  .about-lead{
+    font-family:var(--display);font-weight:500;
+    font-size:clamp(1.4rem,2.6vw,1.95rem);
+    line-height:1.32;letter-spacing:-.015em;
+  }
+  .about-lead em{font-style:normal;color:var(--acc);}
+  .about-body p{color:var(--muted);margin-bottom:18px;}
+  .about-body p:last-child{margin-bottom:0;}
+  .pillars{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:1px;
+    background:var(--line);border:1px solid var(--line);
+    margin-top:38px;
+  }
+  .pillar{background:var(--bg);padding:24px 22px;}
+  .pillar .pn{font-family:var(--mono);font-size:12px;color:var(--acc);}
+  .pillar h4{
+    font-family:var(--display);font-weight:600;font-size:1.05rem;
+    margin:12px 0 7px;letter-spacing:-.01em;
+  }
+  .pillar p{font-size:.9rem;color:var(--muted);line-height:1.5;}
+
+  /* ---------- projects ---------- */
+  .projects{padding:110px 0;}
+  .project{
+    display:grid;grid-template-columns:80px 1fr auto;gap:36px;
+    align-items:start;padding:46px 0;
+    border-top:1px solid var(--line);
+    transition:padding .3s ease;
+    position:relative;
+  }
+  .project:last-of-type{border-bottom:1px solid var(--line);}
+  .project::before{
+    content:"";position:absolute;left:-28px;right:-28px;top:0;bottom:0;
+    background:var(--surface);opacity:0;transition:opacity .3s ease;z-index:-1;
+  }
+  .project:hover::before{opacity:1;}
+  .p-num{
+    font-family:var(--mono);font-size:14px;color:var(--muted-2);
+    padding-top:6px;transition:color .25s;
+  }
+  .project:hover .p-num{color:var(--acc);}
+  .p-cat{
+    font-family:var(--mono);font-size:11.5px;letter-spacing:.1em;
+    text-transform:uppercase;color:var(--acc);
+  }
+  .p-title{
+    font-family:var(--display);font-weight:700;
+    font-size:clamp(2rem,4.6vw,3.4rem);line-height:1;
+    letter-spacing:-.03em;margin:14px 0 16px;
+  }
+  .p-desc{color:var(--muted);max-width:58ch;margin-bottom:20px;}
+  .p-tags{display:flex;flex-wrap:wrap;gap:8px;}
+  .tag{
+    font-family:var(--mono);font-size:11.5px;letter-spacing:.02em;
+    padding:6px 11px;border:1px solid var(--line);border-radius:2px;
+    color:var(--muted);
+  }
+  .p-link{
+    font-family:var(--mono);font-size:12.5px;letter-spacing:.05em;
+    text-transform:uppercase;display:inline-flex;align-items:center;gap:9px;
+    border:1px solid var(--line-strong);padding:13px 18px;border-radius:2px;
+    white-space:nowrap;transition:all .2s;align-self:center;
+  }
+  .p-link:hover{background:var(--acc);color:#0c0d0f;border-color:var(--acc);}
+  .p-link .arr{transition:transform .2s;}
+  .p-link:hover .arr{transform:translate(2px,-2px);}
+
+  /* ---------- experience ---------- */
+  .experience{padding:110px 0;background:var(--bg-2);
+    border-top:1px solid var(--line);border-bottom:1px solid var(--line);}
+  .timeline{position:relative;}
+  .job{
+    display:grid;grid-template-columns:200px 1fr;gap:40px;
+    padding:34px 0;border-top:1px solid var(--line);position:relative;
+  }
+  .job:first-child{border-top:none;}
+  .job-date{
+    font-family:var(--mono);font-size:12.5px;color:var(--muted);
+    letter-spacing:.03em;padding-top:4px;
+  }
+  .job-date .now{color:var(--acc);}
+  .job h3{
+    font-family:var(--display);font-weight:700;font-size:1.45rem;
+    letter-spacing:-.018em;
+  }
+  .job .co{
+    font-family:var(--mono);font-size:13px;color:var(--acc);
+    margin:5px 0 14px;
+  }
+  .job .co span{color:var(--muted-2);}
+  .job p{color:var(--muted);font-size:.97rem;max-width:62ch;}
+
+  /* ---------- skills ---------- */
+  .skills{padding:110px 0;}
+  .skill-grid{
+    display:grid;grid-template-columns:repeat(2,1fr);gap:1px;
+    background:var(--line);border:1px solid var(--line);
+  }
+  .skill-block{background:var(--bg);padding:32px;}
+  .skill-block .cat{
+    font-family:var(--mono);font-size:12px;letter-spacing:.08em;
+    text-transform:uppercase;color:var(--muted);
+    display:flex;align-items:center;gap:10px;margin-bottom:20px;
+  }
+  .skill-block .cat b{color:var(--acc);font-weight:400;}
+  .skill-block .items{display:flex;flex-wrap:wrap;gap:9px;}
+  .skill-block .items span{
+    font-family:var(--body);font-size:.95rem;font-weight:500;
+    padding:9px 15px;background:var(--surface-2);
+    border:1px solid var(--line);border-radius:2px;
+    transition:border-color .2s,color .2s;
+  }
+  .skill-block .items span:hover{border-color:var(--acc);color:var(--acc);}
+
+  /* ---------- contact ---------- */
+  .contact{padding:130px 0 100px;text-align:center;}
+  .contact .eyebrow{justify-content:center;}
+  .contact h2{
+    font-family:var(--display);font-weight:800;
+    font-size:clamp(3rem,9vw,7rem);line-height:.95;
+    letter-spacing:-.035em;margin:24px 0 18px;
+  }
+  .contact h2 em{font-style:normal;color:var(--acc);}
+  .contact-sub{color:var(--muted);max-width:48ch;margin:0 auto 44px;}
+  .mail{
+    font-family:var(--display);font-weight:600;
+    font-size:clamp(1.3rem,3.6vw,2.4rem);
+    letter-spacing:-.02em;display:inline-block;
+    border-bottom:2px solid var(--line-strong);padding-bottom:6px;
+    transition:border-color .25s,color .25s;
+  }
+  .mail:hover{border-color:var(--acc);color:var(--acc);}
+  .socials{
+    display:flex;gap:14px;justify-content:center;
+    flex-wrap:wrap;margin-top:46px;
+  }
+  .socials a{
+    font-family:var(--mono);font-size:12.5px;letter-spacing:.05em;
+    text-transform:uppercase;padding:13px 22px;
+    border:1px solid var(--line-strong);border-radius:2px;
+    transition:all .2s;display:inline-flex;align-items:center;gap:9px;
+  }
+  .socials a:hover{background:var(--acc);color:#0c0d0f;border-color:var(--acc);transform:translateY(-2px);}
+
+  /* ---------- footer ---------- */
+  footer{
+    border-top:1px solid var(--line);padding:36px 0;
+  }
+  .foot-in{
+    display:flex;justify-content:space-between;align-items:center;
+    flex-wrap:wrap;gap:16px;
+    font-family:var(--mono);font-size:12px;color:var(--muted-2);
+    letter-spacing:.03em;
+  }
+  .foot-in a:hover{color:var(--acc);}
+
+  /* ---------- reveal animation ---------- */
+  .reveal{opacity:0;transform:translateY(28px);
+    transition:opacity .7s cubic-bezier(.2,.6,.2,1),transform .7s cubic-bezier(.2,.6,.2,1);}
+  .reveal.in{opacity:1;transform:none;}
+
+  .hero .anim{opacity:0;transform:translateY(26px);
+    animation:rise .9s cubic-bezier(.2,.6,.2,1) forwards;}
+  @keyframes rise{to{opacity:1;transform:none;}}
+  .d1{animation-delay:.05s;}.d2{animation-delay:.16s;}.d3{animation-delay:.27s;}
+  .d4{animation-delay:.38s;}.d5{animation-delay:.49s;}.d6{animation-delay:.6s;}
+
+  /* ---------- responsive ---------- */
+  @media(max-width:900px){
+    .hero-grid{grid-template-columns:1fr;gap:46px;}
+    .hero-side{flex-direction:row;flex-wrap:wrap;border-left:none;
+      border-top:1px solid var(--line);padding-left:0;padding-top:30px;gap:34px 44px;}
+    .about-grid{grid-template-columns:1fr;gap:36px;}
+    .pillars{grid-template-columns:1fr;}
+    .skill-grid{grid-template-columns:1fr;}
+    .project{grid-template-columns:1fr;gap:18px;}
+    .p-num{padding-top:0;}
+    .p-link{align-self:flex-start;}
+    .job{grid-template-columns:1fr;gap:12px;}
+    .nav-links{
+      position:fixed;inset:0;top:60px;background:var(--bg);
+      flex-direction:column;justify-content:center;gap:28px;
+      transform:translateX(100%);transition:transform .35s ease;
+    }
+    .nav-links.open{transform:none;}
+    .nav-links a{font-size:1rem;}
+    .burger{display:flex;}
+  }
+  @media(max-width:540px){
+    body{font-size:16px;}
+    .wrap{padding:0 20px;}
+    .nav-in{padding:14px 20px;}
+    .hero{padding:140px 0 70px;}
+    .hero-side{flex-direction:column;gap:26px;}
+    .about,.projects,.experience,.skills{padding:80px 0;}
+  }
+  @media(prefers-reduced-motion:reduce){
+    *{animation:none!important;transition:none!important;}
+    .reveal{opacity:1;transform:none;}
+    .hero .anim{opacity:1;transform:none;}
+  }
+</style>
+</head>
+<body>
+<div class="grain"></div>
+<div class="gridlines"></div>
+
+<!-- ============ NAV ============ -->
+<nav id="nav">
+  <div class="nav-in">
+    <a href="#top" class="logo"><b>{ }</b> juan_guerra<span style="color:var(--muted-2)">.dev</span></a>
+    <div class="nav-links" id="navlinks">
+      <a href="#proyectos">Proyectos</a>
+      <a href="#experiencia">Experiencia</a>
+      <a href="#stack">Stack</a>
+      <a href="#contacto" class="nav-cta">Contacto</a>
+    </div>
+    <div class="burger" id="burger"><span></span><span></span><span></span></div>
+  </div>
+</nav>
+
+<!-- ============ HERO ============ -->
+<header class="hero" id="top">
+  <div class="wrap">
+    <div class="hero-grid">
+      <div>
+        <div class="status anim d1"><span class="dot"></span> Disponible para nuevos proyectos · Remote-first</div>
+        <h1>
+          <span class="ln"><span class="anim d2" style="display:inline-block">JUAN ANDRÉS</span></span>
+          <span class="ln"><span class="anim d3" style="display:inline-block">GUERRA<span class="acc-dot">.</span></span></span>
+        </h1>
+        <div class="hero-role anim d4">
+          Software Engineer <span>/</span> Backend .NET &amp; Azure <span>/</span> Buenos Aires, AR
+        </div>
+        <p class="hero-lead anim d4">
+          Diseño y mantengo <b>sistemas backend de nivel productivo</b> con .NET y la nube.
+          5+ años entregando software confiable en entornos exigentes de seguros y banca —
+          y proyectos propios que ya están vivos y en uso.
+        </p>
+        <div class="hero-actions anim d5">
+          <a href="#proyectos" class="btn btn-primary">Ver proyectos →</a>
+          <a href="JuanAndresGuerra_CV.pdf" download class="btn btn-ghost">↓ Descargar CV</a>
+        </div>
+      </div>
+      <aside class="hero-side anim d6">
+        <div class="stat">
+          <div class="num"><em>5+</em></div>
+          <div class="lbl">Años construyendo<br/>software .NET</div>
+        </div>
+        <div class="stat">
+          <div class="num">03</div>
+          <div class="lbl">Plataformas propias<br/>en producción</div>
+        </div>
+        <div class="stat">
+          <div class="num">∞</div>
+          <div class="lbl">Seguros · Banca<br/>entornos enterprise</div>
+        </div>
+      </aside>
+    </div>
+  </div>
+</header>
+
+<!-- ============ MARQUEE ============ -->
+<div class="marquee" aria-hidden="true">
+  <div class="marquee-track">
+    <span>C#</span><span>.NET Core</span><span>ASP.NET Core</span><span>Azure</span>
+    <span>Entity Framework</span><span>SQL Server</span><span>Web API</span><span>CI/CD</span>
+    <span>C#</span><span>.NET Core</span><span>ASP.NET Core</span><span>Azure</span>
+    <span>Entity Framework</span><span>SQL Server</span><span>Web API</span><span>CI/CD</span>
+  </div>
+</div>
+
+<!-- ============ ABOUT ============ -->
+<section class="about" id="about">
+  <div class="wrap">
+    <div class="about-grid">
+      <div class="reveal">
+        <div class="eyebrow">Sobre mí</div>
+        <p class="about-lead" style="margin-top:20px">
+          Software Engineer con foco en el <em>backend</em>: APIs confiables, datos consistentes y sistemas que no se caen cuando más se los necesita.
+        </p>
+      </div>
+      <div class="about-body reveal">
+        <p>
+          Soy Juan Andrés Guerra, Ingeniero en Informática por la Universidad Nacional de La Matanza.
+          Llevo más de cinco años construyendo y manteniendo aplicaciones de nivel productivo con
+          <b style="color:var(--text)">.NET</b> y <b style="color:var(--text)">Azure</b>.
+        </p>
+        <p>
+          Trabajé en entornos donde la confiabilidad no es opcional —seguros y banca—, ocupándome
+          de pipelines de CI/CD, despliegues en la nube, integraciones serverless y APIs que
+          sostienen operaciones reales. Estoy cómodo en equipos distribuidos y remote-first.
+        </p>
+        <p>
+          Hoy combino ese background enterprise con proyectos propios que diseñé, desarrollé
+          y puse en producción de punta a punta.
+        </p>
+        <div class="pillars">
+          <div class="pillar">
+            <span class="pn">01</span>
+            <h4>APIs &amp; Backend</h4>
+            <p>Servicios .NET sólidos, bases de datos relacionales bien modeladas y código mantenible.</p>
+          </div>
+          <div class="pillar">
+            <span class="pn">02</span>
+            <h4>Cloud &amp; CI/CD</h4>
+            <p>Despliegues en Azure, pipelines automatizados y funciones serverless en producción.</p>
+          </div>
+          <div class="pillar">
+            <span class="pn">03</span>
+            <h4>De la idea a producción</h4>
+            <p>Capaz de llevar un producto completo desde el diseño hasta el sitio en vivo.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PROJECTS ============ -->
+<section class="projects" id="proyectos">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="eyebrow">01 / Proyectos en producción</div>
+      <h2>Software que <em>ya está vivo.</em></h2>
     </div>
 
-    <!-- Scripts de Bootstrap y tu script personalizado -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <script src="app.js"></script>
+    <!-- project 1 -->
+    <article class="project reveal">
+      <div class="p-num">/01</div>
+      <div>
+        <div class="p-cat">App social · SPA</div>
+        <h3 class="p-title">Futbolero!</h3>
+        <p class="p-desc">
+          Aplicación web para organizar y gestionar partidos de fútbol entre amigos:
+          convocatorias, armado de equipos y seguimiento de cada partido. Single Page
+          Application con API propia y base de datos relacional.
+        </p>
+        <div class="p-tags">
+          <span class="tag">.NET Core</span>
+          <span class="tag">React</span>
+          <span class="tag">SQL Server</span>
+          <span class="tag">Web API REST</span>
+        </div>
+      </div>
+      <a href="https://futbolero.ar" target="_blank" rel="noopener" class="p-link">
+        Visitar sitio <span class="arr">↗</span>
+      </a>
+    </article>
+
+    <!-- project 2 -->
+    <article class="project reveal">
+      <div class="p-num">/02</div>
+      <div>
+        <div class="p-cat">E-commerce</div>
+        <h3 class="p-title">Verde Mercado</h3>
+        <p class="p-desc">
+          Tienda online de productos agroecológicos: catálogo, carrito de compras,
+          registro de usuarios y autenticación con Google. Conecta a productores
+          familiares con consumidores conscientes.
+        </p>
+        <div class="p-tags">
+          <span class="tag">ASP.NET Core MVC</span>
+          <span class="tag">Entity Framework</span>
+          <span class="tag">SQL Server</span>
+          <span class="tag">Google OAuth</span>
+        </div>
+      </div>
+      <a href="https://verdemercado.com.ar" target="_blank" rel="noopener" class="p-link">
+        Visitar sitio <span class="arr">↗</span>
+      </a>
+    </article>
+
+    <!-- project 3 -->
+    <article class="project reveal">
+      <div class="p-num">/03</div>
+      <div>
+        <div class="p-cat">Sitio institucional</div>
+        <h3 class="p-title">Sentido de Vida</h3>
+        <p class="p-desc">
+          Sitio institucional para una comunidad religiosa: agenda de eventos,
+          ministerios, galería, suscripción a newsletter y un panel de administración
+          a medida para gestionar todo el contenido.
+        </p>
+        <div class="p-tags">
+          <span class="tag">.NET</span>
+          <span class="tag">Panel de administración</span>
+          <span class="tag">Newsletter</span>
+          <span class="tag">Diseño responsive</span>
+        </div>
+      </div>
+      <a href="https://sentidodevida.com.ar" target="_blank" rel="noopener" class="p-link">
+        Visitar sitio <span class="arr">↗</span>
+      </a>
+    </article>
+  </div>
+</section>
+
+<!-- ============ EXPERIENCE ============ -->
+<section class="experience" id="experiencia">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="eyebrow">02 / Trayectoria</div>
+      <h2>Dónde <em>dejé código.</em></h2>
+    </div>
+    <div class="timeline">
+      <div class="job reveal">
+        <div class="job-date">Ene 2024 — <span class="now">Presente</span></div>
+        <div>
+          <h3>Software Developer — Freelance</h3>
+          <div class="co">Remoto <span>/ Proyectos propios</span></div>
+          <p>
+            Desarrollo y mantenimiento de aplicaciones web con .NET Core, React y SQL Server.
+            Construí y desplegué plataformas listas para producción, incluyendo futbolero.ar
+            y verdemercado.com.ar.
+          </p>
+        </div>
+      </div>
+      <div class="job reveal">
+        <div class="job-date">Ene 2022 — Jul 2024</div>
+        <div>
+          <h3>Software Developer</h3>
+          <div class="co">Nybble Group <span>/ Remoto</span></div>
+          <p>
+            Desarrollo y mantenimiento de aplicaciones enterprise del rubro seguros con .NET,
+            ASP.NET Core, SQL Server y Angular. Gestión de despliegues en múltiples entornos
+            con Azure DevOps (CI/CD) e implementación de Azure Functions para procesar webhooks
+            de Stripe de forma segura e idempotente.
+          </p>
+        </div>
+      </div>
+      <div class="job reveal">
+        <div class="job-date">Sep 2021 — Dic 2021</div>
+        <div>
+          <h3>Backend Developer</h3>
+          <div class="co">Snoop Consulting <span>/ Remoto</span></div>
+          <p>
+            Migración de microservicios de Java a .NET Core en un entorno bancario. Desarrollo
+            de servicios backend con .NET Core, Oracle y Entity Framework, trabajando en sprints
+            ágiles con equipos multidisciplinarios.
+          </p>
+        </div>
+      </div>
+      <div class="job reveal">
+        <div class="job-date">Mar 2020 — Ago 2021</div>
+        <div>
+          <h3>Full Stack Developer</h3>
+          <div class="co">Ar-Tech</div>
+          <p>
+            Sistemas backend con .NET Core y SQL Server para plataformas de gestión de pedidos
+            y pronóstico de ventas. Soluciones de procesamiento de facturas multiformato
+            (parsing de PDF e imágenes).
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SKILLS ============ -->
+<section class="skills" id="stack">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="eyebrow">03 / Stack técnico</div>
+      <h2>Con qué <em>trabajo.</em></h2>
+    </div>
+    <div class="skill-grid">
+      <div class="skill-block reveal">
+        <div class="cat"><b>+</b> Backend</div>
+        <div class="items">
+          <span>C#</span><span>.NET Core</span><span>ASP.NET Core</span>
+          <span>Entity Framework</span><span>LINQ</span><span>Web API</span>
+        </div>
+      </div>
+      <div class="skill-block reveal">
+        <div class="cat"><b>+</b> Cloud &amp; DevOps</div>
+        <div class="items">
+          <span>Azure</span><span>Azure DevOps</span><span>CI/CD Pipelines</span>
+          <span>Azure Functions</span>
+        </div>
+      </div>
+      <div class="skill-block reveal">
+        <div class="cat"><b>+</b> Bases de datos</div>
+        <div class="items">
+          <span>SQL Server</span><span>Oracle</span>
+        </div>
+      </div>
+      <div class="skill-block reveal">
+        <div class="cat"><b>+</b> Frontend</div>
+        <div class="items">
+          <span>React</span><span>Angular</span><span>Blazor</span>
+        </div>
+      </div>
+      <div class="skill-block reveal" style="grid-column:1/-1">
+        <div class="cat"><b>+</b> Herramientas &amp; metodología</div>
+        <div class="items">
+          <span>Git</span><span>Scrum</span><span>Agile</span>
+          <span>Stripe Webhooks</span><span>Procesamiento PDF / OCR</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CONTACT ============ -->
+<section class="contact" id="contacto">
+  <div class="wrap">
+    <div class="eyebrow">04 / Contacto</div>
+    <h2>Hagamos algo <em>que funcione.</em></h2>
+    <p class="contact-sub">
+      Disponible para posiciones full-time y proyectos freelance, de forma remota.
+      Si buscás alguien que entregue backend confiable, escribime.
+    </p>
+    <a href="mailto:juanguerracuenta@gmail.com" class="mail">juanguerracuenta@gmail.com</a>
+    <div class="socials">
+      <a href="mailto:juanguerracuenta@gmail.com">✉ Email</a>
+      <a href="https://github.com/juanpato" target="_blank" rel="noopener">⌥ GitHub</a>
+      <a href="https://www.linkedin.com/in/juan-andres-guerra/" target="_blank" rel="noopener">in LinkedIn</a>
+      <a href="JuanAndresGuerra_CV.pdf" download>↓ Descargar CV</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer>
+  <div class="wrap foot-in">
+    <div>© 2026 Juan Andrés Guerra — Software Engineer</div>
+    <div>Buenos Aires, Argentina · Hecho con C# y café</div>
+    <a href="#top">↑ Volver arriba</a>
+  </div>
+</footer>
+
+<script>
+  // nav scroll state
+  const nav=document.getElementById('nav');
+  addEventListener('scroll',()=>nav.classList.toggle('scrolled',scrollY>20));
+
+  // mobile menu
+  const burger=document.getElementById('burger');
+  const links=document.getElementById('navlinks');
+  burger.addEventListener('click',()=>links.classList.toggle('open'));
+  links.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>links.classList.remove('open')));
+
+  // scroll reveal
+  const io=new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}
+    });
+  },{threshold:.12,rootMargin:'0px 0px -60px 0px'});
+  document.querySelectorAll('.reveal').forEach((el,i)=>{
+    el.style.transitionDelay=(i%4*0.07)+'s';
+    io.observe(el);
+  });
+</script>
 </body>
 </html>
