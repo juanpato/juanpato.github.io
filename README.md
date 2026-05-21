@@ -52,7 +52,7 @@ python -m http.server 8000
 
 ## Contacto
 
-- 📧 juanguerracuenta@gmail.com
+- 📧 juan.guerra.dev@outlook.com
 - 💼 [LinkedIn](https://www.linkedin.com/in/juan-andres-guerra/)
 - 🐙 [GitHub](https://github.com/juanpato)
 - 📍 Buenos Aires, Argentina
