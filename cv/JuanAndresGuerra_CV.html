@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Juan Andres Guerra CV</title>
+<style>
+  @page { size: Letter; margin: 0.46in 0.68in; }
+
+  html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+  body {
+    margin: 0;
+    padding: 0;
+    font-family: "Segoe UI", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 9.1pt;
+    line-height: 1.255;
+    color: #000;
+  }
+
+  a { color: #14418a; text-decoration: none; }
+
+  /* ---------- header ---------- */
+  header { text-align: center; margin-bottom: 8pt; }
+  h1 {
+    margin: 0;
+    font-size: 17.5pt;
+    font-weight: 600;
+    letter-spacing: 0.055em;
+    text-transform: uppercase;
+  }
+  .role { margin-top: 2pt; font-size: 9.8pt; font-weight: 600; }
+  .meta { margin-top: 2.5pt; color: #333; }
+  .meta .sep { color: #999; padding: 0 5pt; }
+
+  /* ---------- sections ---------- */
+  h2 {
+    margin: 7pt 0 0;
+    padding-bottom: 2.2pt;
+    border-bottom: 0.6pt solid #000;
+    font-size: 10.2pt;
+    font-weight: 700;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+  }
+  h2 + * { margin-top: 5pt; }
+
+  p { margin: 0; }
+
+  /* ---------- entries ---------- */
+  .entry { margin-top: 5pt; break-inside: avoid; }
+  .entry:first-of-type { margin-top: 5pt; }
+
+  .line {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 12pt;
+  }
+  .what { font-weight: 700; }
+  .when { color: #333; white-space: nowrap; }
+  .where { color: #222; margin-top: 0.5pt; }
+  .where .sep { color: #999; padding: 0 4pt; }
+
+  ul { margin: 2.5pt 0 0; padding-left: 11pt; }
+  li { margin-top: 1pt; }
+  li::marker { color: #555; }
+
+  /* ---------- skills ---------- */
+  .skills { margin-top: 6pt; }
+  .skills div { margin-top: 2.2pt; }
+  .skills b { font-weight: 700; }
+
+  .foot { margin-top: 6pt; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Juan Andr&eacute;s Guerra</h1>
+  <div class="role">Software Engineer</div>
+  <div class="meta">Buenos Aires, Argentina</div>
+  <div class="meta">
+    <a href="mailto:juanguerracuenta@gmail.com">juanguerracuenta@gmail.com</a>
+    <span class="sep">|</span>
+    <a href="https://www.linkedin.com/in/juan-andres-guerra/">LinkedIn</a>
+    <span class="sep">|</span>
+    <a href="https://github.com/juanpato">GitHub</a>
+    <span class="sep">|</span>
+    <a href="https://juanpato.github.io">juanpato.github.io</a>
+  </div>
+</header>
+
+<h2>Summary</h2>
+<p>
+  Backend developer with 6+ years building and maintaining production .NET systems, most of it on
+  enterprise applications in regulated domains: insurance, banking and academic publishing. Used to
+  owning a feature end to end, from the database up to the screen, and to remote work in distributed teams.
+</p>
+
+<h2>Experience</h2>
+
+<div class="entry">
+  <div class="line">
+    <span class="what">Software Developer</span>
+    <span class="when">Jan 2024 &ndash; Present</span>
+  </div>
+  <div class="where">Talios Factory Tech <span class="sep">|</span> Remote</div>
+  <ul>
+    <li>Full stack work on the content platform of a US scientific publishing company, on both the
+        .NET backend and the frontend, in English with the client team every day.</li>
+  </ul>
+</div>
+
+<div class="entry">
+  <div class="line">
+    <span class="what">Software Developer</span>
+    <span class="when">Jan 2022 &ndash; Jul 2024</span>
+  </div>
+  <div class="where">Nybble Group <span class="sep">|</span> Remote</div>
+  <ul>
+    <li>Built and maintained insurance applications for a US pet insurance provider, using .NET,
+        ASP.NET Core, SQL Server and Angular, in a team of 7.</li>
+    <li>Implemented Azure Functions (HTTP triggers) to process Stripe webhook events, making payment
+        handling idempotent so a repeated webhook never charges a customer twice.</li>
+    <li>Managed deployments across multiple environments with Azure DevOps pipelines (CI/CD).</li>
+    <li>Investigated and resolved production incidents, keeping downtime to a minimum.</li>
+  </ul>
+</div>
+
+<div class="entry">
+  <div class="line">
+    <span class="what">Backend Developer</span>
+    <span class="when">Sep 2021 &ndash; Dec 2021</span>
+  </div>
+  <div class="where">Snoop Consulting <span class="sep">|</span> Remote</div>
+  <ul>
+    <li>Migrated microservices from Java to .NET Core in a banking environment, in a team of 6.</li>
+    <li>Developed and maintained backend services with .NET Core, Oracle and Entity Framework.</li>
+  </ul>
+</div>
+
+<div class="entry">
+  <div class="line">
+    <span class="what">Full Stack Developer</span>
+    <span class="when">Mar 2020 &ndash; Aug 2021</span>
+  </div>
+  <div class="where">Ar-Tech</div>
+  <ul>
+    <li>Built backend systems with .NET Core and SQL Server for order management and sales
+        forecasting platforms.</li>
+    <li>Built multi format invoice processing, parsing both PDFs and images.</li>
+  </ul>
+</div>
+
+<h2>Projects</h2>
+
+<div class="entry">
+  <div class="line">
+    <span class="what">Verde Mercado</span>
+    <span class="when"><a href="https://verdemercado.com.ar">verdemercado.com.ar</a></span>
+  </div>
+  <ul>
+    <li>Organic food e-commerce built end to end with ASP.NET Core 6, EF Core and SQL Server: Google
+        OAuth sign in, shipping cost by distance through the Google Maps API, images on Azure Blob
+        Storage and admin reports exported to Excel.</li>
+    <li>Packaged with a multi stage Dockerfile and deployed to Render, secrets injected as environment
+        variables and Data Protection keys persisted so sessions survive a container restart. Covered
+        by 119 xUnit tests using Moq and an in memory EF context.</li>
+  </ul>
+</div>
+
+<div class="entry">
+  <div class="line">
+    <span class="what">Futbolero</span>
+    <span class="when"><a href="https://futbolero.ar">futbolero.ar</a></span>
+  </div>
+  <ul>
+    <li>Web app plus native iOS and Android apps to organise football matches between friends, built
+        with TypeScript, React, React Native (Expo) and Node.js.</li>
+  </ul>
+</div>
+
+<h2>Technical Skills</h2>
+<div class="skills">
+  <div><b>Backend:</b> C#, .NET 6, .NET Core, .NET Framework, ASP.NET Core, MVC, Entity Framework Core, LINQ, REST APIs</div>
+  <div><b>Testing:</b> xUnit, Moq, FluentAssertions, integration tests with an in memory EF context</div>
+  <div><b>Cloud &amp; DevOps:</b> Docker, Azure DevOps (CI/CD), Azure Functions, Azure Blob Storage</div>
+  <div><b>Databases:</b> SQL Server, Oracle</div>
+  <div><b>Frontend:</b> Angular, React, React Native, Razor, Blazor</div>
+  <div><b>Tools:</b> Git, Scrum, Agile</div>
+  <div><b>Languages:</b> Spanish (native). English (fluent, B2), used at work every day for the last 4 years.</div>
+</div>
+
+<h2>Education</h2>
+<div class="entry">
+  <div class="line">
+    <span class="what">Ingenier&iacute;a en Inform&aacute;tica</span>
+    <span class="when">2023</span>
+  </div>
+  <div class="where">Universidad Nacional de La Matanza</div>
+</div>
+
+</body>
+</html>
