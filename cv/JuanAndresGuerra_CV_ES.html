@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Juan Andres Guerra CV (ES)</title>
+<style>
+  @page { size: Letter; margin: 0.46in 0.68in; }
+
+  html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+  body {
+    margin: 0;
+    padding: 0;
+    font-family: "Segoe UI", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 9.1pt;
+    line-height: 1.255;
+    color: #000;
+  }
+
+  a { color: #14418a; text-decoration: none; }
+
+  /* ---------- header ---------- */
+  header { text-align: center; margin-bottom: 8pt; }
+  h1 {
+    margin: 0;
+    font-size: 17.5pt;
+    font-weight: 600;
+    letter-spacing: 0.055em;
+    text-transform: uppercase;
+  }
+  .role { margin-top: 2pt; font-size: 9.8pt; font-weight: 600; }
+  .meta { margin-top: 2.5pt; color: #333; }
+  .meta .sep { color: #999; padding: 0 5pt; }
+
+  /* ---------- sections ---------- */
+  h2 {
+    margin: 7pt 0 0;
+    padding-bottom: 2.2pt;
+    border-bottom: 0.6pt solid #000;
+    font-size: 10.2pt;
+    font-weight: 700;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+  }
+  h2 + * { margin-top: 5pt; }
+
+  p { margin: 0; }
+
+  /* ---------- entries ---------- */
+  .entry { margin-top: 5pt; break-inside: avoid; }
+  .entry:first-of-type { margin-top: 5pt; }
+
+  .line {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 12pt;
+  }
+  .what { font-weight: 700; }
+  .when { color: #333; white-space: nowrap; }
+  .where { color: #222; margin-top: 0.5pt; }
+  .where .sep { color: #999; padding: 0 4pt; }
+
+  ul { margin: 2.5pt 0 0; padding-left: 11pt; }
+  li { margin-top: 1pt; }
+  li::marker { color: #555; }
+
+  /* ---------- skills ---------- */
+  .skills { margin-top: 6pt; }
+  .skills div { margin-top: 2.2pt; }
+  .skills b { font-weight: 700; }
+
+  .foot { margin-top: 6pt; }
+</style>
+<style>
+  body { font-size: 8.95pt; line-height: 1.235; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Juan Andr&eacute;s Guerra</h1>
+  <div class="role">Software Engineer</div>
+  <div class="meta">Buenos Aires, Argentina</div>
+  <div class="meta">
+    <a href="mailto:juanguerracuenta@gmail.com">juanguerracuenta@gmail.com</a>
+    <span class="sep">|</span>
+    <a href="https://www.linkedin.com/in/juan-andres-guerra/">LinkedIn</a>
+    <span class="sep">|</span>
+    <a href="https://github.com/juanpato">GitHub</a>
+    <span class="sep">|</span>
+    <a href="https://juanpato.github.io">juanpato.github.io</a>
+  </div>
+</header>
+
+<h2>Resumen</h2>
+<p>
+  Desarrollador backend con m&aacute;s de 6 a&ntilde;os construyendo y manteniendo sistemas .NET en
+  producci&oacute;n, la mayor parte en aplicaciones enterprise de rubros regulados: seguros, banca y
+  publicaciones acad&eacute;micas. Acostumbrado a hacerme cargo de una funcionalidad de punta a punta,
+  de la base de datos a la pantalla, y a trabajar en remoto con equipos distribuidos.
+</p>
+
+<h2>Experiencia</h2>
+
+<div class="entry">
+  <div class="line">
+    <span class="what">Software Developer</span>
+    <span class="when">Ene 2024 &ndash; Presente</span>
+  </div>
+  <div class="where">Talios Factory Tech <span class="sep">|</span> Remoto</div>
+  <ul>
+    <li>Trabajo full stack sobre la plataforma de contenidos de una editorial cient&iacute;fica de
+        Estados Unidos, tanto en el backend .NET como en el frontend, en ingl&eacute;s con el equipo
+        del cliente todos los d&iacute;as.</li>
+  </ul>
+</div>
+
+<div class="entry">
+  <div class="line">
+    <span class="what">Software Developer</span>
+    <span class="when">Ene 2022 &ndash; Jul 2024</span>
+  </div>
+  <div class="where">Nybble Group <span class="sep">|</span> Remoto</div>
+  <ul>
+    <li>Desarrollo y mantenimiento de aplicaciones de seguros para una aseguradora de mascotas de
+        Estados Unidos, con .NET, ASP.NET Core, SQL Server y Angular, en un equipo de 7.</li>
+    <li>Implementaci&oacute;n de Azure Functions (HTTP triggers) para procesar los webhooks de Stripe,
+        haciendo idempotente el manejo de pagos para que un webhook repetido nunca cobre dos veces.</li>
+    <li>Gesti&oacute;n de despliegues en m&uacute;ltiples entornos con pipelines de Azure DevOps (CI/CD).</li>
+    <li>Diagn&oacute;stico y resoluci&oacute;n de incidentes en producci&oacute;n, con la ca&iacute;da
+        de servicio al m&iacute;nimo.</li>
+  </ul>
+</div>
+
+<div class="entry">
+  <div class="line">
+    <span class="what">Backend Developer</span>
+    <span class="when">Sep 2021 &ndash; Dic 2021</span>
+  </div>
+  <div class="where">Snoop Consulting <span class="sep">|</span> Remoto</div>
+  <ul>
+    <li>Migraci&oacute;n de microservicios de Java a .NET Core en un entorno bancario, en un equipo de 6.</li>
+    <li>Desarrollo y mantenimiento de servicios backend con .NET Core, Oracle y Entity Framework.</li>
+  </ul>
+</div>
+
+<div class="entry">
+  <div class="line">
+    <span class="what">Full Stack Developer</span>
+    <span class="when">Mar 2020 &ndash; Ago 2021</span>
+  </div>
+  <div class="where">Ar-Tech</div>
+  <ul>
+    <li>Desarrollo de sistemas backend con .NET Core y SQL Server para plataformas de gesti&oacute;n
+        de pedidos y pron&oacute;stico de ventas.</li>
+    <li>Procesamiento de facturas en m&uacute;ltiples formatos, parseando tanto PDFs como
+        im&aacute;genes.</li>
+  </ul>
+</div>
+
+<h2>Proyectos</h2>
+
+<div class="entry">
+  <div class="line">
+    <span class="what">Verde Mercado</span>
+    <span class="when"><a href="https://verdemercado.com.ar">verdemercado.com.ar</a></span>
+  </div>
+  <ul>
+    <li>E-commerce de productos org&aacute;nicos hecho de punta a punta con ASP.NET Core 6, EF Core y
+        SQL Server: login con Google OAuth, costo de env&iacute;o por distancia contra la API de Google
+        Maps, im&aacute;genes en Azure Blob Storage y reportes de administraci&oacute;n exportados a Excel.</li>
+    <li>Empaquetado con un Dockerfile multi stage y desplegado en Render, con los secretos inyectados
+        como variables de entorno y las claves de Data Protection persistidas para que las sesiones
+        sobrevivan al reinicio del contenedor. Cubierto por 119 tests de xUnit con Moq y EF en memoria.</li>
+  </ul>
+</div>
+
+<div class="entry">
+  <div class="line">
+    <span class="what">Futbolero</span>
+    <span class="when"><a href="https://futbolero.ar">futbolero.ar</a></span>
+  </div>
+  <ul>
+    <li>App web m&aacute;s apps nativas de iOS y Android para organizar partidos de f&uacute;tbol entre
+        amigos, hecha junto a otro desarrollador con TypeScript, React, React Native (Expo) y Node.js.</li>
+  </ul>
+</div>
+
+<h2>Conocimientos t&eacute;cnicos</h2>
+<div class="skills">
+  <div><b>Backend:</b> C#, .NET 6, .NET Core, .NET Framework, ASP.NET Core, MVC, Entity Framework Core, LINQ, REST APIs</div>
+  <div><b>Testing:</b> xUnit, Moq, FluentAssertions, tests de integraci&oacute;n con un contexto de EF en memoria</div>
+  <div><b>Cloud &amp; DevOps:</b> Docker, Azure DevOps (CI/CD), Azure Functions, Azure Blob Storage</div>
+  <div><b>Bases de datos:</b> SQL Server, Oracle</div>
+  <div><b>Frontend:</b> Angular, React, React Native, Razor, Blazor</div>
+  <div><b>Herramientas:</b> Git, Scrum, Agile</div>
+  <div><b>Idiomas:</b> Espa&ntilde;ol (nativo). Ingl&eacute;s (fluido, B2), usado en el trabajo todos los d&iacute;as desde hace 4 a&ntilde;os.</div>
+</div>
+
+<h2>Educaci&oacute;n</h2>
+<div class="entry">
+  <div class="line">
+    <span class="what">Ingenier&iacute;a en Inform&aacute;tica</span>
+    <span class="when">2023</span>
+  </div>
+  <div class="where">Universidad Nacional de La Matanza</div>
+</div>
+
+</body>
+</html>
